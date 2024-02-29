@@ -1,6 +1,55 @@
 [
     {
+        "departments": [
+            {
+                "name": "Engineering"
+            },
+            {
+                "name": "Medical"
+            }
+        ],
+
         "students": [
+            {
+                "name": "Saif Ullah",
+                "email": "saif.ullah@email.com",
+                "dept_id": 1
+            },
+            {
+                "name": "Asad Ullah",
+                "email": "asad.ullah@email.com",
+                "dept_id": 2
+            },
+            {
+                "name": "Hafsa Malik",
+                "email": "hafsa.malik@email.com",
+                "dept_id": 1
+            }
+        ],
+
+        "teachers": [
+            {
+                "name": "Rafia Mumtaz",
+                "email": "rafia.mumtaz@email.com",
+                "dept_id": 1
+            },
+            {
+                "name": "Arslan Khan",
+                "email": "arslan.khan@email.com",
+                "dept_id": 1
+            },
+            {
+                "name": "Seemab Latif",
+                "email": "seemab.latif@email.com",
+                "dept_id": 2
+            }
+        ],
+
+        "subjects": [
+            {
+                "name": "Software Engineering",
+                "description": "Software Engineering includes extensive studies on the best practices to make a software."
+            },
             {
                 "name"
             }
