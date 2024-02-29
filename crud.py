@@ -5,7 +5,6 @@ from models import (
     Student,
     Subject,
     Teacher,
-    Teaching,
     Department,
     Enrollment
 )
@@ -16,7 +15,6 @@ from schemas import (
     Teacher,
     Student,
     TeacherCreate,
-    TeachingCreate,
     EnrollmentCreate,
     DepartmentCreate
 )
@@ -49,6 +47,7 @@ def create_department(
         db: Session, 
         department: DepartmentCreate,
     ):
+
     db_dept = Department(**department.dict())
     db.add(db_dept)
 
@@ -61,10 +60,16 @@ def create_department(
 def create_subject(
         db: Session, 
         subject: SubjectCreate,
+        dept_id: int,
+        teacher_id: int,
         students: Optional[List[Student]] = None
     ):
 
-    db_subject = Subject(**subject.dict())
+    db_subject = Subject(
+        **subject.dict(), 
+        dept_id=dept_id, 
+        teacher_id=teacher_id
+    )
     db.add(db_subject)
 
     db.commit()
@@ -83,8 +88,7 @@ def create_subject(
 def create_teacher(
         db: Session, 
         teacher: TeacherCreate, 
-        dept_id: int, 
-        subjects: Optional[List[Subject]] = None
+        dept_id: int
     ):
 
     db_teacher = Teacher(**teacher.dict(), dept_id=dept_id)
@@ -92,13 +96,6 @@ def create_teacher(
 
     db.commit()
     db.refresh(db_teacher)
-    
-    if subjects:
-        for subject in subjects:
-            create_teaching(
-                db, 
-                TeachingCreate(subject_id=subject.id, teacher_id=db_teacher.id)
-            )
 
     return db_teacher
 
