@@ -88,3 +88,43 @@ def create_enrollment(
 
     return db_enroll
 
+
+def get_student(db: Session, email: str):
+    return (
+        db
+        .query(Student)
+        .filter(Student.email == email)
+        .first()
+    )
+
+def get_department(db: Session, dept_name: str):
+    return (
+        db
+        .query(Department)
+        .filter(Department.dept_name == dept_name)
+        .first()
+    )
+
+def get_teacher(db: Session, email: str):
+    return (
+        db
+        .query(Teacher)
+        .filter(Teacher.email == email)
+        .first()
+    )
+
+def get_subject(db: Session, subj_name: str):
+    return (
+        db
+        .query(Subject)
+        .filter(Subject.subj_name == subj_name)
+        .first()
+    )
+
+def get_enrollment(db: Session, student_id: int, subject_id: int):
+    return (
+        db
+        .query(Enrollment)
+        .filter((Enrollment.student_id == student_id) & (Enrollment.subject_id == subject_id))
+        .first()
+    )
