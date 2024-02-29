@@ -56,8 +56,8 @@ class Subject(Base):
 class Enrollment(Base):
     __tablename__ = 'enrollments'
 
-    student_id = Column(Integer, ForeignKey('students.id'))
-    subject_id = Column(Integer, ForeignKey('subjects.id'))
+    student_id = Column(Integer, ForeignKey('students.id'), primary_key=True)
+    subject_id = Column(Integer, ForeignKey('subjects.id'), primary_key=True)
 
     students = relationship('Student', back_populates='subjects')
     subjects = relationship('Subject', back_populates='students')
@@ -66,8 +66,8 @@ class Enrollment(Base):
 class Teaching(Base):
     __tablename__ = 'teachings'
 
-    teacher_id = Column(Integer, ForeignKey('teachers.id'))
-    subject_id = Column(Integer, ForeignKey('subjects.id'))
+    teacher_id = Column(Integer, ForeignKey('teachers.id'), primary_key=True)
+    subject_id = Column(Integer, ForeignKey('subjects.id'), primary_key=True)
 
     teachers = relationship('Teacher', back_populates='subjects')
     subjects = relationship('Subject', back_populates='teachers')
