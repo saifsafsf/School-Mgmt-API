@@ -1,3 +1,4 @@
+from sqlalchemy.orm import relationship
 from sqlalchemy import (
     Column,
     Boolean,
@@ -5,7 +6,6 @@ from sqlalchemy import (
     String,
     ForeignKey
 )
-from sqlalchemy.orm import relationship
 
 from database import Base
 
@@ -14,8 +14,8 @@ class Student(Base):
     __tablename__ = 'students'
 
     id = Column(Integer, primary_key=True, autoincrement='auto')
-    name = Column(String)
-    email = Column(String, unique=True, index=True)
+    name = Column(String(30))
+    email = Column(String(50), unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
     
     department = relationship('Department', back_populates='students')
@@ -26,8 +26,8 @@ class Teacher(Base):
     __tablename__ = 'teachers'
 
     id = Column(Integer, primary_key=True, autoincrement='auto')
-    name = Column(String)
-    email = Column(String, unique=True, index=True)
+    name = Column(String(30))
+    email = Column(String(50), unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
     
     department = relationship('Department', back_populates='teachers')
@@ -38,7 +38,7 @@ class Department(Base):
     __tablename__ = 'departments'
 
     id = Column(Integer, primary_key=True, autoincrement='auto')
-    name = Column(String, unique=True, index=True)
+    name = Column(String(30), unique=True, index=True)
 
     students = relationship('Student', back_populates='department')
     teachers = relationship('Teacher', back_populates='department')
@@ -49,10 +49,10 @@ class Subject(Base):
     __tablename__ = 'subjects'
 
     id = Column(Integer, primary_key=True, autoincrement='auto')
-    name = Column(String, unique=True, index=True)
+    name = Column(String(30), unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
     teacher_id = Column(Integer, ForeignKey('teachers.id'))
-    description = Column(String)
+    description = Column(String(256))
 
     students = relationship('Enrollment', back_populates='subjects')
     teacher = relationship('Teacher', back_populates='subjects')
