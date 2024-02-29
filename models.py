@@ -13,7 +13,7 @@ from database import Base
 class Student(Base):
     __tablename__ = 'students'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement='auto')
     email = Column(String, unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
     
@@ -24,7 +24,7 @@ class Student(Base):
 class Teacher(Base):
     __tablename__ = 'teachers'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement='auto')
     email = Column(String, unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
     
@@ -35,7 +35,7 @@ class Teacher(Base):
 class Department(Base):
     __tablename__ = 'departments'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement='auto')
     name = Column(String, unique=True, index=True)
 
     students = relationship('Student', back_populates='department')
@@ -45,7 +45,7 @@ class Department(Base):
 class Subject(Base):
     __tablename__ = 'subjects'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement='auto')
     name = Column(String, unique=True, index=True)
     description = Column(String)
 
