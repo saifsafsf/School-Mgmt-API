@@ -31,6 +31,7 @@ class Teacher(Base):
     dept_id = Column(Integer, ForeignKey('departments.id'))
     
     department = relationship('Department', back_populates='teachers')
+    subjects = relationship('Subject', back_populates='teacher')
 
 
 class Department(Base):
@@ -50,9 +51,11 @@ class Subject(Base):
     id = Column(Integer, primary_key=True, autoincrement='auto')
     name = Column(String, unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
+    teacher_id = Column(Integer, ForeignKey('teachers.id'))
     description = Column(String)
 
     students = relationship('Enrollment', back_populates='subjects')
+    teacher = relationship('Teacher', back_populates='subjects')
     department = relationship('Department', back_populates='subjects')
 
 

@@ -60,8 +60,7 @@ def create_department(
 
 def create_subject(
         db: Session, 
-        subject: SubjectCreate, 
-        teachers: Optional[List[Teacher]] = None,
+        subject: SubjectCreate,
         students: Optional[List[Student]] = None
     ):
 
@@ -70,13 +69,6 @@ def create_subject(
 
     db.commit()
     db.refresh(db_subject)
-
-    if teachers:
-        for teacher in teachers:
-            create_teaching(
-                db, 
-                TeachingCreate(teacher_id=teacher.id, subject_id=db_subject.id)
-            )
     
     if students:
         for student in students:
@@ -124,16 +116,3 @@ def create_enrollment(
 
     return db_enroll
 
-
-def create_teaching(
-        db: Session, 
-        teaching: TeachingCreate
-    ):
-    
-    db_teaching = Teaching(**teaching.dict())
-    db.add(db_teaching)
-
-    db.commit()
-    db.refresh(db_teaching)
-
-    return db_teaching

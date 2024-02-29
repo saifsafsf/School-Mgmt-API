@@ -49,6 +49,7 @@ class SubjectBase(BaseModel):
     name: str
     description: str
     dept_id: int
+    teacher_id: int
 
 class SubjectCreate(SubjectBase):
     pass
