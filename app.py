@@ -3,16 +3,24 @@ from fastapi import FastAPI, UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
 import json
 
-from database import SessionLocal, engine
-from models import (
-    Teacher,
-    Teaching,
-    Department,
-    Student,
-    Subject,
-    Enrollment
+from database import SessionLocal, engine, Base
+from crud import (
+    create_department,
+    create_enrollment,
+    create_student,
+    create_subject,
+    create_teacher,
+)
+from schemas import (
+    StudentCreate,
+    SubjectCreate,
+    TeacherCreate,
+    DepartmentCreate,
+    EnrollmentCreate
 )
 
+
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -25,7 +33,7 @@ def get_db():
         db.close()
 
 @app.post('/upload')
-async def upload_payload(
+async def upload_departments(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
@@ -34,8 +42,11 @@ async def upload_payload(
     contents = content.decode('utf-8')
     data = json.loads(contents)
 
-    for item in data:
-        pass
+    for row in data:
+        create_department(
+            db=db, 
+            department=DepartmentCreate(**row)
+        )
 
 
 @app.get('/')
