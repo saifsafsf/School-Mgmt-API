@@ -6,6 +6,7 @@ import json
 from database import SessionLocal, engine, Base
 import crud
 import schemas
+import models
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,9 +23,9 @@ def get_db():
 
 @app.post('/upload/')
 async def upload_data(
-    file: UploadFile = File(...),
-    db: Session = Depends(get_db)
-):
+        file: UploadFile = File(...),
+        db: Session = Depends(get_db)
+    ):
     
     content = await file.read()
     content_str = content.decode('utf-8')
@@ -96,8 +97,7 @@ async def upload_data(
             )
 
             if db_enroll:
-                # raise HTTPException(status_code=400, detail="Enrollment already exists!")
-                return row, db_enroll
+                raise HTTPException(status_code=400, detail="Enrollment already exists!")
             
             crud.create_enrollment(
                 db=db,
@@ -112,15 +112,54 @@ async def upload_data(
 
 @app.get('/students/{student_id}/subjects/')
 def get_subjects_by_student(
-    student_id: int, 
-    db: Session = Depends(get_db)
-):
+        student_id: int, 
+        db: Session = Depends(get_db)
+    ):
+
+    db_student = (
+        db
+        .query(models.Student)
+        .filter(models.Student.id == student_id)
+        .first()
+    )
+
+    if not db_student:
+        raise HTTPException(status_code=404, detail="Student does not exists!")
+
     subjects = crud.get_subject_by_student(
         db=db,
         student_id=student_id
     )
 
     return subjects
+
+@app.put('/update/')
+async def update_record(
+        file: UploadFile = File(...), 
+        db: Session = Depends(get_db)
+    ):
+
+    try:
+        content = await file.read()
+        content_str = content.decode('utf-8')
+        data = json.loads(content_str)
+
+        update_request = []
+        for row in data:
+            update_request.append(schemas.UpdateItem(**row))
+
+        success, message = crud.update_records(
+            db=db,
+            update_request=schemas.UpdateRequest(updates=update_request)
+        )
+
+        if not success:
+            raise HTTPException(status_code=400, detail=message)
+        
+        return {"success": True, "message": message}
+    
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get('/')

@@ -8,18 +8,12 @@ from models import (
     Department,
     Enrollment
 )
-from schemas import (
-    StudentCreate,
-    SubjectCreate,
-    TeacherCreate,
-    EnrollmentCreate,
-    DepartmentCreate
-)
+import schemas
 
 
 def create_student(
         db: Session, 
-        student: StudentCreate
+        student: schemas.StudentCreate
     ):
 
     db_student = Student(**student.dict())
@@ -33,7 +27,7 @@ def create_student(
 
 def create_department(
         db: Session, 
-        department: DepartmentCreate,
+        department: schemas.DepartmentCreate,
     ):
 
     db_dept = Department(**department.dict())
@@ -47,7 +41,7 @@ def create_department(
 
 def create_subject(
         db: Session, 
-        subject: SubjectCreate
+        subject: schemas.SubjectCreate
     ):
 
     db_subject = Subject(
@@ -63,7 +57,7 @@ def create_subject(
 
 def create_teacher(
         db: Session, 
-        teacher: TeacherCreate
+        teacher: schemas.TeacherCreate
     ):
 
     db_teacher = Teacher(**teacher.dict())
@@ -77,7 +71,7 @@ def create_teacher(
 
 def create_enrollment(
         db: Session, 
-        enrollment: EnrollmentCreate
+        enrollment: schemas.EnrollmentCreate
     ):
 
     db_enroll = Enrollment(**enrollment.dict())
@@ -151,3 +145,60 @@ def get_subject_by_student(db: Session, student_id: int):
             subjects.append(subject)
 
     return subjects
+
+def update_records(db: Session, update_request: schemas.UpdateRequest):
+    try:
+        for update_item in update_request.updates:
+            table_name = update_item.table_name
+            record_id = update_item.record_id
+            updated_fields = update_item.updated_fields
+
+            if table_name == "students":
+                (
+                    db
+                    .query(Student)
+                    .filter(Student.id == record_id)
+                    .update(updated_fields)
+                )
+
+            elif table_name == "teachers":
+                (
+                    db
+                    .query(Teacher)
+                    .filter(Teacher.id == record_id)
+                    .update(updated_fields)
+                )
+
+            elif table_name == "departments":
+                (
+                    db
+                    .query(Department)
+                    .filter(Department.id == record_id)
+                    .update(updated_fields)
+                )
+
+            elif table_name == "subjects":
+                (
+                    db
+                    .query(Subject)
+                    .filter(Subject.id == record_id)
+                    .update(updated_fields)
+                )
+
+            elif table_name == "students":
+                (
+                    db
+                    .query(Student)
+                    .filter(Student.id == record_id)
+                    .update(updated_fields)
+                )
+            
+            else:
+                return False, f"Table '{table_name}' does not exist!"
+
+        db.commit()
+        return True, "Records updated successfully!"
+    
+    except Exception as e:
+        db.rollback()
+        return False, str(e)

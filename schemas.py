@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Dict, Any
+
 
 
 class DepartmentBase(BaseModel):
@@ -73,3 +74,16 @@ class Enrollment(EnrollmentBase):
 
     class Config:
         orm_mode = True
+
+
+class UpdateItem(BaseModel):
+    table_name: str
+    record_id: int
+    updated_fields: Dict[str, Any]
+
+class UpdateRequest(BaseModel):
+    updates: List[UpdateItem]
+
+class UpdateResponse(BaseModel):
+    success: bool
+    message: str
