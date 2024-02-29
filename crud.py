@@ -128,3 +128,26 @@ def get_enrollment(db: Session, student_id: int, subject_id: int):
         .filter((Enrollment.student_id == student_id) & (Enrollment.subject_id == subject_id))
         .first()
     )
+
+def get_subject_by_student(db: Session, student_id: int):
+
+    enrollments = (
+        db
+        .query(Enrollment)
+        .filter(Enrollment.student_id == student_id)
+        .all()
+    )
+
+    subjects = []
+    for enrollment in enrollments:
+        subject = (
+            db
+            .query(Subject)
+            .filter(Subject.id == enrollment.subject_id)
+            .first()
+        )
+
+        if subject:
+            subjects.append(subject)
+
+    return subjects
