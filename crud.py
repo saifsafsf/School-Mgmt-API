@@ -11,9 +11,6 @@ from models import (
 from schemas import (
     StudentCreate,
     SubjectCreate,
-    Subject,
-    Teacher,
-    Student,
     TeacherCreate,
     EnrollmentCreate,
     DepartmentCreate
@@ -22,23 +19,14 @@ from schemas import (
 
 def create_student(
         db: Session, 
-        student: StudentCreate, 
-        dept_id: int,
-        subjects: Optional[List[Subject]] = None
+        student: StudentCreate
     ):
 
-    db_student = Student(**student.dict(), dept_id=dept_id)
+    db_student = Student(**student.dict())
     db.add(db_student)
     
     db.commit()
     db.refresh(db_student)
-
-    if subjects:
-        for subject in subjects:
-            create_enrollment(
-                db, 
-                EnrollmentCreate(student_id=db_student.id, subject_id=subject.id)
-            )
     
     return db_student
 
@@ -59,39 +47,26 @@ def create_department(
 
 def create_subject(
         db: Session, 
-        subject: SubjectCreate,
-        dept_id: int,
-        teacher_id: int,
-        students: Optional[List[Student]] = None
+        subject: SubjectCreate
     ):
 
     db_subject = Subject(
-        **subject.dict(), 
-        dept_id=dept_id, 
-        teacher_id=teacher_id
+        **subject.dict()
     )
     db.add(db_subject)
 
     db.commit()
     db.refresh(db_subject)
-    
-    if students:
-        for student in students:
-            create_enrollment(
-                db, 
-                EnrollmentCreate(student_id=student.id, subject_id=db_subject.id)
-            )
 
     return db_subject
 
 
 def create_teacher(
         db: Session, 
-        teacher: TeacherCreate, 
-        dept_id: int
+        teacher: TeacherCreate
     ):
 
-    db_teacher = Teacher(**teacher.dict(), dept_id=dept_id)
+    db_teacher = Teacher(**teacher.dict())
     db.add(db_teacher)
 
     db.commit()

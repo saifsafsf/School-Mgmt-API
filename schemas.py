@@ -3,7 +3,7 @@ from typing import List, Optional
 
 
 class DepartmentBase(BaseModel):
-    name: str
+    dept_name: str
 
 class DepartmentCreate(DepartmentBase):
     pass
@@ -17,7 +17,7 @@ class Department(DepartmentBase):
 
 class StudentBase(BaseModel):
     email: str
-    name: str
+    std_name: str
     dept_id: int
 
 class StudentCreate(StudentBase):
@@ -32,7 +32,7 @@ class Student(StudentBase):
 
 class TeacherBase(BaseModel):
     email: str
-    name: str
+    teacher_name: str
     dept_id: int
 
 class TeacherCreate(TeacherBase):
@@ -46,7 +46,7 @@ class Teacher(TeacherBase):
 
 
 class SubjectBase(BaseModel):
-    name: str
+    subj_name: str
     description: str
     dept_id: int
     teacher_id: int
