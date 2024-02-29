@@ -4,20 +4,8 @@ from sqlalchemy.orm import Session
 import json
 
 from database import SessionLocal, engine, Base
-from crud import (
-    create_department,
-    create_enrollment,
-    create_student,
-    create_subject,
-    create_teacher,
-)
-from schemas import (
-    StudentCreate,
-    SubjectCreate,
-    TeacherCreate,
-    DepartmentCreate,
-    EnrollmentCreate
-)
+import crud
+import schemas
 
 Base.metadata.create_all(bind=engine)
 
@@ -32,8 +20,8 @@ def get_db():
         db.close()
 
 
-@app.post('/upload/dept/')
-async def upload_departments(
+@app.post('/upload/')
+async def upload_data(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
@@ -45,39 +33,82 @@ async def upload_departments(
     for row in data:
 
         if 'dept_name' in row:
-            create_department(
+            db_dept = crud.get_department(
                 db=db, 
-                department=DepartmentCreate(**row)
+                dept_name=row.get('dept_name')
+            )
+
+            if db_dept:
+                raise HTTPException(status_code=400, detail="Department already exists!")
+            
+            crud.create_department(
+                db=db, 
+                department=schemas.DepartmentCreate(**row)
             )
 
         elif 'std_name' in row:
-            create_student(
+            db_stud = crud.get_student(
                 db=db,
-                student=StudentCreate(**row)
+                email=row.get('email')
+            )
+
+            if db_stud:
+                raise HTTPException(status_code=400, detail="Student already exists!")
+
+            crud.create_student(
+                db=db,
+                student=schemas.StudentCreate(**row)
             )
         
         elif 'subj_name' in row:
-            create_subject(
+            db_subj = crud.get_subject(
                 db=db,
-                subject=SubjectCreate(**row)
+                subj_name=row.get('subj_name')
+            )
+
+            if db_subj:
+                raise HTTPException(status_code=400, detail="Subject already exists!")
+
+            crud.create_subject(
+                db=db,
+                subject=schemas.SubjectCreate(**row)
             )
         
         elif 'teacher_name' in row:
-            create_teacher(
+            db_teacher = crud.get_teacher(
                 db=db,
-                teacher=TeacherCreate(**row)
+                email=row.get('email')
+            )
+
+            if db_teacher:
+                raise HTTPException(status_code=400, detail="Teacher already exists!")
+            
+            crud.create_teacher(
+                db=db,
+                teacher=schemas.TeacherCreate(**row)
             )
         
         elif ('subject_id' in row) and ('student_id'  in row):
-            create_enrollment(
+            db_enroll = crud.get_enrollment(
                 db=db,
-                enrollment=EnrollmentCreate(**row)
+                student_id=row.get('student_id'),
+                subject_id=row.get('subject_id')
+            )
+
+            if db_enroll:
+                # raise HTTPException(status_code=400, detail="Enrollment already exists!")
+                return row, db_enroll
+            
+            crud.create_enrollment(
+                db=db,
+                enrollment=schemas.EnrollmentCreate(**row)
             )
 
         else:
             pass
 
     return {"message": "Data Inserted Successfully!"}
+
 
 @app.get('/')
 def home_page():
