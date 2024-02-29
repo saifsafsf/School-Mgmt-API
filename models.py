@@ -30,7 +30,6 @@ class Teacher(Base):
     email = Column(String, unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
     
-    subjects = relationship('Teaching', back_populates='teachers')
     department = relationship('Department', back_populates='teachers')
 
 
@@ -54,7 +53,6 @@ class Subject(Base):
     description = Column(String)
 
     students = relationship('Enrollment', back_populates='subjects')
-    teachers = relationship('Teaching', back_populates='subjects')
     department = relationship('Department', back_populates='subjects')
 
 
@@ -66,13 +64,3 @@ class Enrollment(Base):
 
     students = relationship('Student', back_populates='subjects')
     subjects = relationship('Subject', back_populates='students')
-
-
-class Teaching(Base):
-    __tablename__ = 'teachings'
-
-    teacher_id = Column(Integer, ForeignKey('teachers.id'), primary_key=True)
-    subject_id = Column(Integer, ForeignKey('subjects.id'), primary_key=True)
-
-    teachers = relationship('Teacher', back_populates='subjects')
-    subjects = relationship('Subject', back_populates='teachers')

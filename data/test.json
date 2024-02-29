@@ -48,10 +48,41 @@
         "subjects": [
             {
                 "name": "Software Engineering",
-                "description": "Software Engineering includes extensive studies on the best practices to make a software."
+                "description": "Software Engineering includes extensive studies on the best practices to make a software.",
+                "dept_id": 1
             },
             {
-                "name"
+                "name": "MBBS",
+                "description": "MBBS includes comprehensive studies on medical conditions in living things.",
+                "dept_id": 2
+            },
+            {
+                "name": "Artifical Intelligence",
+                "description": "AI constitutes studying about the machines learning like human brains.",
+                "dept_id": 1
+            }
+        ],
+
+        "enrollments": [
+            {
+                "student_id": 1,
+                "subject_id": 1
+            },
+            {
+                "student_id": 1,
+                "subject_id": 3
+            },
+            {
+                "student_id": 2,
+                "subject_id": 2
+            },
+            {
+                "student_id": 3,
+                "subject_id": 1
+            },
+            {
+                "student_id": 3,
+                "subject_id": 3
             }
         ]
     }

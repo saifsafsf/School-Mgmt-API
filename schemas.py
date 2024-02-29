@@ -72,17 +72,3 @@ class Enrollment(EnrollmentBase):
 
     class Config:
         orm_mode = True
-
-
-class TeachingBase(BaseModel):
-    teacher_id: int
-    subject_id: int
-
-class TeachingCreate(TeachingBase):
-    pass
-
-class Teaching(TeachingBase):
-    pass
-
-    class Config:
-        orm_mode = True
