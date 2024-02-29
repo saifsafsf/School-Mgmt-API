@@ -1,0 +1,16 @@
+[
+    {
+        "table_name": "teachers",
+        "record_id": 1,
+        "updated_fields": {
+            "email": "rmumtaz.seecs@email.com"
+        }
+    },
+    {
+        "table_name": "subjects",
+        "record_id": 2,
+        "updated_fields": {
+            "subj_name": "DHMS"
+        }
+    }
+]
