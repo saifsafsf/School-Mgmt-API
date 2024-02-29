@@ -27,8 +27,8 @@ async def upload_data(
 ):
     
     content = await file.read()
-    contents = content.decode('utf-8')
-    data = json.loads(contents)
+    content_str = content.decode('utf-8')
+    data = json.loads(content_str)
 
     for row in data:
 
@@ -108,6 +108,19 @@ async def upload_data(
             pass
 
     return {"message": "Data Inserted Successfully!"}
+
+
+@app.get('/students/{student_id}/subjects/')
+def get_subjects_by_student(
+    student_id: int, 
+    db: Session = Depends(get_db)
+):
+    subjects = crud.get_subject_by_student(
+        db=db,
+        student_id=student_id
+    )
+
+    return subjects
 
 
 @app.get('/')
