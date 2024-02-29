@@ -1,92 +1,76 @@
 [
     {
-        "departments": [
-            {
-                "name": "Engineering"
-            },
-            {
-                "name": "Medical"
-            }
-        ],
-
-        "students": [
-            {
-                "name": "Saif Ullah",
-                "email": "saif.ullah@email.com",
-                "dept_id": 1
-            },
-            {
-                "name": "Asad Ullah",
-                "email": "asad.ullah@email.com",
-                "dept_id": 2
-            },
-            {
-                "name": "Hafsa Malik",
-                "email": "hafsa.malik@email.com",
-                "dept_id": 1
-            }
-        ],
-
-        "teachers": [
-            {
-                "name": "Rafia Mumtaz",
-                "email": "rafia.mumtaz@email.com",
-                "dept_id": 1
-            },
-            {
-                "name": "Arslan Khan",
-                "email": "arslan.khan@email.com",
-                "dept_id": 1
-            },
-            {
-                "name": "Seemab Latif",
-                "email": "seemab.latif@email.com",
-                "dept_id": 2
-            }
-        ],
-
-        "subjects": [
-            {
-                "name": "Software Engineering",
-                "description": "Software Engineering includes extensive studies on the best practices to make a software.",
-                "teacher_id": 1,
-                "dept_id": 1
-            },
-            {
-                "name": "MBBS",
-                "description": "MBBS includes comprehensive studies on medical conditions in living things.",
-                "teacher_id": 3,
-                "dept_id": 2
-            },
-            {
-                "name": "Artifical Intelligence",
-                "description": "AI constitutes studying about the machines learning like human brains.",
-                "teacher_id": 2,
-                "dept_id": 1
-            }
-        ],
-
-        "enrollments": [
-            {
-                "student_id": 1,
-                "subject_id": 1
-            },
-            {
-                "student_id": 1,
-                "subject_id": 3
-            },
-            {
-                "student_id": 2,
-                "subject_id": 2
-            },
-            {
-                "student_id": 3,
-                "subject_id": 1
-            },
-            {
-                "student_id": 3,
-                "subject_id": 3
-            }
-        ]
+        "dept_name": "Engineering"
+    },
+    {
+        "dept_name": "Medical"
+    },
+    {
+        "std_name": "Saif Ullah",
+        "email": "saif.ullah@email.com",
+        "dept_id": 1
+    },
+    {
+        "std_name": "Asad Ullah",
+        "email": "asad.ullah@email.com",
+        "dept_id": 2
+    },
+    {
+        "std_name": "Hafsa Malik",
+        "email": "hafsa.malik@email.com",
+        "dept_id": 1
+    },
+    {
+        "teacher_name": "Rafia Mumtaz",
+        "email": "rafia.mumtaz@email.com",
+        "dept_id": 1
+    },
+    {
+        "teacher_name": "Arslan Khan",
+        "email": "arslan.khan@email.com",
+        "dept_id": 1
+    },
+    {
+        "teacher_name": "Seemab Latif",
+        "email": "seemab.latif@email.com",
+        "dept_id": 2
+    },
+    {
+        "subj_name": "Software Engineering",
+        "description": "Software Engineering includes extensive studies on the best practices to make a software.",
+        "teacher_id": 1,
+        "dept_id": 1
+    },
+    {
+        "subj_name": "MBBS",
+        "description": "MBBS includes comprehensive studies on medical conditions in living things.",
+        "teacher_id": 3,
+        "dept_id": 2
+    },
+    {
+        "subj_name": "Artifical Intelligence",
+        "description": "AI constitutes studying about the machines learning like human brains.",
+        "teacher_id": 2,
+        "dept_id": 1
+    },
+    {
+        "student_id": 1,
+        "subject_id": 1
+    },
+    {
+        "student_id": 1,
+        "subject_id": 3
+    },
+    {
+        "student_id": 2,
+        "subject_id": 2
+    },
+    {
+        "student_id": 3,
+        "subject_id": 1
+    },
+    {
+        "student_id": 3,
+        "subject_id": 3
     }
 ]
