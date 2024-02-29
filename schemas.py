@@ -17,6 +17,7 @@ class Department(DepartmentBase):
 
 class StudentBase(BaseModel):
     email: str
+    name: str
     dept_id: int
 
 class StudentCreate(StudentBase):
@@ -31,6 +32,7 @@ class Student(StudentBase):
 
 class TeacherBase(BaseModel):
     email: str
+    name: str
     dept_id: int
 
 class TeacherCreate(TeacherBase):

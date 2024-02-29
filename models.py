@@ -14,6 +14,7 @@ class Student(Base):
     __tablename__ = 'students'
 
     id = Column(Integer, primary_key=True, autoincrement='auto')
+    name = Column(String)
     email = Column(String, unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
     
@@ -25,6 +26,7 @@ class Teacher(Base):
     __tablename__ = 'teachers'
 
     id = Column(Integer, primary_key=True, autoincrement='auto')
+    name = Column(String)
     email = Column(String, unique=True, index=True)
     dept_id = Column(Integer, ForeignKey('departments.id'))
     
