@@ -65,3 +65,6 @@ Ref: subjects.teacher_id > teachers.id```
 ```
 ## ERD
 https://dbdiagram.io/d/65e14cbacd45b569fb43136b
+
+![ERD](https://github.com/saifsafsf/Sila-Assignment/assets/73883918/96abec9b-e3a7-4212-b238-88d64fe11e6d)
+
