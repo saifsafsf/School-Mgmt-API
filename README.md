@@ -52,7 +52,7 @@ Table enrollments {
 Ref: students.dept_id > departments.id
 Ref: teachers.dept_id > departments.id
 Ref: subjects.dept_id > departments.id
-Ref: subjects.teacher_id > teachers.id
-
+Ref: subjects.teacher_id > teachers.id```
+```
 ## ERD
 https://dbdiagram.io/d/65e14cbacd45b569fb43136b
