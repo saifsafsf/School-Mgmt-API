@@ -126,9 +126,7 @@ async def upload_data(
             else:
                 pass
 
-        
     return {"message": "Data Inserted Successfully!"}
-    
 
 
 @app.post('/upload/')
