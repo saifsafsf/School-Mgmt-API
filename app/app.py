@@ -109,7 +109,7 @@ async def upload_data(
             elif 'std_name' == col:
                 db_stud = crud.get_student(
                     db=db,
-                    email=row.get('email')
+                    email=row.get('std_email')
                 )
 
                 if db_stud:
@@ -118,32 +118,32 @@ async def upload_data(
                 crud.create_student(
                     db=db,
                     student=schemas.StudentCreate(
-                        email=row.get('email'),
+                        email=row.get('std_email'),
                         std_name=row.get('std_name'),
                         dept_id=row.get('dept_id')
-                    )
-                )
-            
-            elif ('subj_name' in row) and ('std_name' in row):
-                db_enroll = crud.get_enrollment(
-                    db=db,
-                    student_id=row.get('student_id'),
-                    subject_id=row.get('subject_id')
-                )
-
-                if db_enroll:
-                    continue
-                
-                crud.create_enrollment(
-                    db=db,
-                    enrollment=schemas.EnrollmentCreate(
-                        student_id=row.get('std_id'),
-                        subject_id=row.get('subj_id')
                     )
                 )
 
             else:
                 pass
+            
+        if ('subj_name' in row) and ('std_name' in row):
+            db_enroll = crud.get_enrollment(
+                db=db,
+                student_id=row.get('std_id'),
+                subject_id=row.get('subj_id')
+            )
+
+            if db_enroll:
+                continue
+            
+            crud.create_enrollment(
+                db=db,
+                enrollment=schemas.EnrollmentCreate(
+                    student_id=row.get('std_id'),
+                    subject_id=row.get('subj_id')
+                )
+            )
 
     return {"message": "Data Inserted Successfully!"}
 
