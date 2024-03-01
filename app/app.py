@@ -27,7 +27,7 @@ def get_db():
         db.close()
 
 
-@app.post('/upload/csv/')
+@app.post('/upload/csv')
 async def upload_data(
         file: UploadFile = File(...),
         db: Session = Depends(get_db)
@@ -148,7 +148,7 @@ async def upload_data(
     return {"message": "Data Inserted Successfully!"}
 
 
-@app.post('/upload/')
+@app.post('/upload')
 async def upload_data(
         file: UploadFile = File(...),
         db: Session = Depends(get_db)
@@ -251,13 +251,20 @@ async def upload_data(
     return {"message": "Data Inserted Successfully!"}
 
 
-@app.get('/students/{student_id}/subjects/')
+@app.get('/students/{student_id}/subjects')
 def get_subjects_by_student(
         student_id: int, 
         db: Session = Depends(get_db)
     ):
     """
-    
+    Retrieve subjects enrolled by a specific student.
+
+    Parameters
+    ----------
+    student_id : int
+        the student's id in the db
+    db : Session
+        SQLAlchemy database session. Automatically obtained from the get_db dependency
     """
 
     db_student = (
@@ -277,11 +284,21 @@ def get_subjects_by_student(
 
     return subjects
 
-@app.put('/update/')
+@app.put('/update')
 async def update_record(
         file: UploadFile = File(...), 
         db: Session = Depends(get_db)
     ):
+    """
+    Updates the given fields of the records.
+
+    Parameters
+    ----------
+    file : UploadFile
+        the JSON file to be uploaded
+    db : Session
+        SQLAlchemy database session. Automatically obtained from the get_db dependency
+    """
 
     try:
         content = await file.read()
@@ -308,6 +325,19 @@ async def update_record(
 
 @app.delete('/delete')
 def delete_enrollment(student_id: int, subject_id: int, db: Session = Depends(get_db)):
+    """
+    Deletes the enrollment of a student
+
+    Parameters
+    ----------
+    student_id : int
+        the student's id in the db
+    subject_id : int
+        the subject's id in the db
+    db : Session
+        SQLAlchemy database session. Automatically obtained from the get_db dependency
+    """
+
     db_enroll = crud.get_enrollment(
         db=db,
         student_id=student_id,
