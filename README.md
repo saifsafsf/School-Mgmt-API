@@ -4,6 +4,14 @@
 
 This database schema represents a simplified model for managing students, teachers, departments, subjects, and enrollments. It allows for tracking students' enrollment in subjects, teachers associated with subjects, and departments to which students and teachers belong.
 
+## How to run
+
+Note: The projects utilizes a hidden .env file to form the mysql connector url. Pydantic is also used to validate these environment variables and provide better abstraction.
+- Update/Create the `.env` file.
+- Make sure the variables in `.env` file match the variables in `config.py`.
+- Create the database. You do not need to create individual tables. The `app.py` does that for you.
+- Run `pip install -r requirements.txt`
+
 ## Schema
 
 The schema consists of the following tables:
@@ -52,7 +60,7 @@ Table enrollments {
 Ref: students.dept_id > departments.id
 Ref: teachers.dept_id > departments.id
 Ref: subjects.dept_id > departments.id
-Ref: subjects.teacher_id > teachers.id
-
+Ref: subjects.teacher_id > teachers.id```
+```
 ## ERD
 https://dbdiagram.io/d/65e14cbacd45b569fb43136b
