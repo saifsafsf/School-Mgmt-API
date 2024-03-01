@@ -10,7 +10,8 @@ Note: The projects utilizes a hidden .env file to form the mysql connector url. 
 - Update/Create the `.env` file.
 - Make sure the variables in `.env` file match the variables in `config.py`.
 - Create the database. You do not need to create individual tables. The `app.py` does that for you.
-- Run `pip install -r requirements.txt`
+- Run `docker build -t myapp .` to build the image.
+- Run `docker-compose up` to run the project.
 
 ## Schema
 
