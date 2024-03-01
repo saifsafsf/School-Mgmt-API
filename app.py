@@ -162,6 +162,28 @@ async def update_record(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.delete('/delete')
+def delete_enrollment(student_id: int, subject_id: int, db: Session = Depends(get_db)):
+    db_enroll = crud.get_enrollment(
+        db=db,
+        student_id=student_id,
+        subject_id=subject_id
+    )
+
+    if not db_enroll:
+        raise HTTPException(status_code=400, detail="Enrollment not found!")
+
+    success, message = crud.delete_enrollments(
+        db=db,
+        student_id=student_id,
+        subject_id=subject_id
+    )
+
+    if not success: 
+        raise HTTPException(status_code=400, detail=message)
+    return {"success": True, "message": message}
+
+
 @app.get('/')
 def home_page():
     return {"message": "This is HOME!"}

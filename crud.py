@@ -202,3 +202,21 @@ def update_records(db: Session, update_request: schemas.UpdateRequest):
     except Exception as e:
         db.rollback()
         return False, str(e)
+    
+
+def delete_enrollments(db: Session, student_id: int, subject_id: int):
+    try:
+        enrollment = (
+            db
+            .query(Enrollment)
+            .filter((Enrollment.student_id == student_id) & (Enrollment.subject_id == subject_id))
+            .first()
+        )
+        
+        db.delete(enrollment)
+        db.commit()
+        return True, "Enrollment deleted successfully!"
+    
+    except Exception as e:
+        db.rollback()
+        return False, str(e)
