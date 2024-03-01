@@ -15,6 +15,10 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 def get_db():
+    """
+    Provides a SQLAlchemy database session to the caller within a context manager.
+    """
+
     db = SessionLocal()
 
     try:
@@ -28,20 +32,35 @@ async def upload_data(
         file: UploadFile = File(...),
         db: Session = Depends(get_db)
     ):
+    """
+    Endpoint to upload CSV data and insert it into the database.
 
+    Parameters
+    ----------
+    file : UploadFile
+        the CSV file to be uploaded
+    db : Session
+        SQLAlchemy database session. Automatically obtained from the get_db dependency
+    """
+
+    # waiting for the uploading file
     content = await file.read()
     content_str = content.decode('utf-8')
     data = csv.DictReader(StringIO(content_str))
 
+    # for each row in the csv
     for row in data:
+        # for each column in the row
         for col in row:
 
             if 'dept_name' == col:
+                # finding if the dept already exists
                 db_dept = crud.get_department(
                     db=db, 
                     dept_name=row.get('dept_name')
                 )
 
+                # in CSV bulk insertions, ignore if it exists
                 if db_dept:
                     continue
                 
@@ -134,19 +153,33 @@ async def upload_data(
         file: UploadFile = File(...),
         db: Session = Depends(get_db)
     ):
+    """
+    Endpoint to upload JSON data and insert it into the database.
+
+    Parameters
+    ----------
+    file : UploadFile
+        the JSON file to be uploaded
+    db : Session
+        SQLAlchemy database session. Automatically obtained from the get_db dependency
+    """
     
+    # waiting for the uploading file
     content = await file.read()
     content_str = content.decode('utf-8')
     data = json.loads(content_str)
 
+    # for every dictionary in the list
     for row in data:
 
         if 'dept_name' in row:
+            # if the dept already exists
             db_dept = crud.get_department(
                 db=db, 
                 dept_name=row.get('dept_name')
             )
 
+            # raise an exception, halt the process
             if db_dept:
                 raise HTTPException(status_code=400, detail="Department already exists!")
             
@@ -223,6 +256,9 @@ def get_subjects_by_student(
         student_id: int, 
         db: Session = Depends(get_db)
     ):
+    """
+    
+    """
 
     db_student = (
         db
