@@ -1,0 +1,3 @@
+std_id,std_name,email,dept_id,dept_name,teacher_id,teacher_name,teacher_email,subj_id,subj_name,description
+1,Saif Ullah,saif.ullah@email.com,1,Engineering,1,Rafia Mumtaz,rmumtaz.seecs@email.com,1,Software Engineering,Software Engineering includes extensive studies on the best practices to make a software.
+2,Hafsa Malik,hafsa.malik@email.com,1,Engineering,2,Arslan Khan,arslan.khan@email.com,2,Artificial Intelligence,AI constitutes studying about the machines learning like human brains.

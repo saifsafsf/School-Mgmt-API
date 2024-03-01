@@ -1,7 +1,9 @@
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
+from io import StringIO
 import json
+import csv
 
 from database import SessionLocal, engine, Base
 import crud
@@ -19,6 +21,114 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@app.post('/upload/csv/')
+async def upload_data(
+        file: UploadFile = File(...),
+        db: Session = Depends(get_db)
+    ):
+
+    content = await file.read()
+    content_str = content.decode('utf-8')
+    data = csv.DictReader(StringIO(content_str))
+
+    for row in data:
+        for col in row:
+
+            if 'dept_name' == col:
+                db_dept = crud.get_department(
+                    db=db, 
+                    dept_name=row.get('dept_name')
+                )
+
+                if db_dept:
+                    continue
+                
+                crud.create_department(
+                    db=db, 
+                    department=schemas.DepartmentCreate(dept_name=row.get('dept_name'))
+                )
+
+            elif 'teacher_name' == col:
+                db_teacher = crud.get_teacher(
+                    db=db,
+                    email=row.get('teacher_email')
+                )
+
+                if db_teacher:
+                    continue
+                
+                crud.create_teacher(
+                    db=db,
+                    teacher=schemas.TeacherCreate(
+                        email=row.get('teacher_email'),
+                        teacher_name=row.get('teacher_name'),
+                        dept_id=row.get('dept_id')
+                    )
+                )
+
+            elif 'subj_name' == col:
+                db_subj = crud.get_subject(
+                    db=db,
+                    subj_name=row.get('subj_name')
+                )
+
+                if db_subj:
+                    continue
+
+                crud.create_subject(
+                    db=db,
+                    subject=schemas.SubjectCreate(
+                        subj_name=row.get('subj_name'),
+                        description=row.get('description'),
+                        dept_id=row.get('dept_id'),
+                        teacher_id=row.get('teacher_id')
+                    )
+                )
+            
+            elif 'std_name' == col:
+                db_stud = crud.get_student(
+                    db=db,
+                    email=row.get('email')
+                )
+
+                if db_stud:
+                    continue
+
+                crud.create_student(
+                    db=db,
+                    student=schemas.StudentCreate(
+                        email=row.get('email'),
+                        std_name=row.get('std_name'),
+                        dept_id=row.get('dept_id')
+                    )
+                )
+            
+            elif ('subj_name' in row) and ('std_name' in row):
+                db_enroll = crud.get_enrollment(
+                    db=db,
+                    student_id=row.get('student_id'),
+                    subject_id=row.get('subject_id')
+                )
+
+                if db_enroll:
+                    continue
+                
+                crud.create_enrollment(
+                    db=db,
+                    enrollment=schemas.EnrollmentCreate(
+                        student_id=row.get('std_id'),
+                        subject_id=row.get('subj_id')
+                    )
+                )
+
+            else:
+                pass
+
+        
+    return {"message": "Data Inserted Successfully!"}
+    
 
 
 @app.post('/upload/')
