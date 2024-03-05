@@ -2,18 +2,15 @@ import uvicorn
 from fastapi import FastAPI, UploadFile, File
 from typing import Literal
 
-from business import (
-    Uploader,
-    Getter,
-    Setter,
-    Deleter
+from app import (
+    GETTER,
+    SETTER,
+    UPLOADER,
+    DELETER
 )
 
+
 app = FastAPI()
-uploader = Uploader()
-getter = Getter()
-setter = Setter()
-deleter = Deleter()
 
 
 @app.post('/upload')
@@ -34,9 +31,9 @@ async def upload_data(
     content = await file.read()
 
     if format == 'csv':
-        message = uploader.upload_csv(content)
+        message = UPLOADER.upload_csv(content)
     elif format == 'json':
-        message = uploader.upload_json(content)
+        message = UPLOADER.upload_json(content)
     else:
         raise ValueError('Invalid Value for `format` parameter. Expected `csv` or `json`.')
 
@@ -54,7 +51,7 @@ def get_subjects_by_student(student_id: int):
         the student's id in the db
     """
 
-    subjects = getter.get_subjects_by_student(student_id)
+    subjects = GETTER.get_subjects_by_student(student_id)
 
     return subjects
 
@@ -73,7 +70,7 @@ async def update_record(
     """
 
     content = await file.read()
-    message = setter.update_record(content)
+    message = SETTER.update_record(content)
 
     return message   
 
@@ -91,7 +88,7 @@ def delete_enrollment(student_id: int, subject_id: int):
         the subject's id in the db
     """
 
-    message = deleter.delete_enrollment(
+    message = DELETER.delete_enrollment(
         student_id=student_id, 
         subject_id=subject_id
     )
