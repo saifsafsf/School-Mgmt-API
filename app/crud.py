@@ -5,7 +5,7 @@ import schemas
 from database import SessionLocal, engine, Base
 
 
-class SQLRepository():
+class SQLRepository:
 
     def __init__(self, create: bool = True):
 
