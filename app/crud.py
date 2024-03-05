@@ -7,11 +7,9 @@ from database import SessionLocal, engine, Base
 
 class SQLRepository:
 
-    def __init__(self, create: bool = True):
+    def __init__(self):
 
-        if create:
-            Base.metadata.create_all(bind=engine)
-
+        Base.metadata.create_all(bind=engine)
         self.db = Depends(self.__get_db)
 
 
