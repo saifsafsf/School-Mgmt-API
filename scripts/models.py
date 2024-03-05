@@ -6,7 +6,7 @@ from sqlalchemy import (
     ForeignKey
 )
 
-from database import Base
+from scripts.database import Base
 
 
 class Student(Base):
