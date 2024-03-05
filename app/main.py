@@ -1,6 +1,9 @@
 import uvicorn
 from fastapi import FastAPI, UploadFile, File
 from typing import Literal
+import sys
+
+sys.path.insert(0, "C:\\NUST\\Jobs\\Sila")
 
 from app import (
     GETTER,

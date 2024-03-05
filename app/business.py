@@ -1,9 +1,9 @@
 from fastapi import HTTPException
 from io import StringIO
-from ..scripts import schemas
 import json
 import csv
 
+from scripts import schemas
 from crud import SQLRepository
 
 
