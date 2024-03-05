@@ -1,7 +1,8 @@
+from fastapi import HTTPException
 from io import StringIO
-import csv
 import schemas
 import json
+import csv
 
 from crud import SQLRepository
 
@@ -29,7 +30,7 @@ class Uploader:
                     if db_dept:
                         continue
                     
-                    self.repo.create_department(
+                    success, message = self.repo.create_department(
                         department=schemas.DepartmentCreate(dept_name=row.get('dept_name'))
                     )
 
@@ -41,7 +42,7 @@ class Uploader:
                     if db_teacher:
                         continue
                     
-                    self.repo.create_teacher(
+                    success, message = self.repo.create_teacher(
                         teacher=schemas.TeacherCreate(
                             email=row.get('teacher_email'),
                             teacher_name=row.get('teacher_name'),
@@ -57,7 +58,7 @@ class Uploader:
                     if db_subj:
                         continue
 
-                    self.repo.create_subject(
+                    success, message = self.repo.create_subject(
                         subject=schemas.SubjectCreate(
                             subj_name=row.get('subj_name'),
                             description=row.get('description'),
@@ -74,7 +75,7 @@ class Uploader:
                     if db_stud:
                         continue
 
-                    self.repo.create_student(
+                    success, message = self.repo.create_student(
                         student=schemas.StudentCreate(
                             email=row.get('std_email'),
                             std_name=row.get('std_name'),
@@ -84,6 +85,9 @@ class Uploader:
 
                 else:
                     pass
+
+                if not success:
+                    raise HTTPException(status_code=400, details=message)
                 
             if ('subj_name' in row) and ('std_name' in row):
                 db_enroll = self.repo.get_enrollment(
@@ -94,14 +98,20 @@ class Uploader:
                 if db_enroll:
                     continue
                 
-                self.repo.create_enrollment(
+                success, message = self.repo.create_enrollment(
                     enrollment=schemas.EnrollmentCreate(
                         student_id=row.get('std_id'),
                         subject_id=row.get('subj_id')
                     )
                 )
 
-        return {"message": "Data Inserted Successfully!"}
+                if not success:
+                    raise HTTPException(status_code=400, details=message)
+
+        return {
+            "success": success, 
+            "message": "Data Inserted Successfully!"
+        }
     
 
     def upload_json(self, file_content: bytes):
@@ -118,21 +128,21 @@ class Uploader:
 
                 # raise an exception, halt the process
                 if db_dept:
-                    return {"message": "Department already exists!"}
+                    raise HTTPException(status_code=400, details="Department already exists.")
                 
-                self.repo.create_department(
+                success, message = self.repo.create_department(
                     department=schemas.DepartmentCreate(**row)
                 )
 
             elif 'std_name' in row:
-                db_stud = self.repo.get_student(
+                db_stud = self.repo.get_student_by_email(
                     email=row.get('email')
                 )
 
                 if db_stud:
-                    return {"message": "Student already exists!"}
+                    raise HTTPException(status_code=400, details="Student already exists!")
 
-                self.repo.create_student(
+                success, message = self.repo.create_student(
                     student=schemas.StudentCreate(**row)
                 )
             
@@ -142,9 +152,9 @@ class Uploader:
                 )
 
                 if db_subj:
-                    return {"message": "Subject already exists!"}
+                    raise HTTPException(status_code=400, details="Subject already exists!")
 
-                self.repo.create_subject(
+                success, message = self.repo.create_subject(
                     subject=schemas.SubjectCreate(**row)
                 )
             
@@ -154,9 +164,9 @@ class Uploader:
                 )
 
                 if db_teacher:
-                    return {"message": "Teacher already exists!"}
+                    raise HTTPException(status_code=400, details="Teacher already exists!")
                 
-                self.repo.create_teacher(
+                success, message = self.repo.create_teacher(
                     teacher=schemas.TeacherCreate(**row)
                 )
             
@@ -167,13 +177,88 @@ class Uploader:
                 )
 
                 if db_enroll:
-                    return {"message": "Enrollment already exists!"}
+                    raise HTTPException(status_code=400, details="Enrollment already exists!")
                 
-                self.repo.create_enrollment(
+                success, message = self.repo.create_enrollment(
                     enrollment=schemas.EnrollmentCreate(**row)
                 )
 
             else:
                 pass
 
-        return {"message": "Data Inserted Successfully!"}
+            if not success:
+                raise HTTPException(status_code=400, details=message)
+
+        return {
+            "success": success, 
+            "message": "Data Inserted Successfully!"
+        }
+    
+
+class Getter:
+
+    def __init__(self, repo=SQLRepository()):
+        self.repo = repo
+
+    
+    def get_subjects_by_student(self, student_id):
+
+        db_student = self.repo.get_student_by_id(id=student_id)
+
+        if not db_student:
+            raise HTTPException(status_code=400, details="Student does not exist!")
+
+        subjects = self.repo.get_subject_by_student(
+            student_id=student_id
+        )
+
+        return subjects
+    
+
+class Setter:
+
+    def __init__(self, repo=SQLRepository()):
+        self.repo = repo
+
+    
+    def update_record(self, file_content: bytes):
+        content_str = file_content.decode('utf-8')
+        data = json.loads(content_str)
+
+        update_request = []
+        for row in data:
+            update_request.append(schemas.UpdateItem(**row))
+
+        success, message = self.repo.update_records(
+            update_request=schemas.UpdateRequest(updates=update_request)
+        )
+
+        if not success:
+            raise HTTPException(status_code=400, detail=message)
+        
+        return {"success": success, "message": message}
+    
+
+class Deleter:
+
+    def __init__(self, repo=SQLRepository()):
+        self.repo = repo
+
+    
+    def delete_enrollment(self, student_id: int, subject_id: int):
+        db_enroll = self.repo.get_enrollment(
+            student_id=student_id,
+            subject_id=subject_id
+        )
+
+        if not db_enroll:
+            raise HTTPException(status_code=400, detail="Enrollment not found!")
+
+        success, message = self.repo.delete_enrollments(
+            student_id=student_id,
+            subject_id=subject_id
+        )
+
+        if not success: 
+            raise HTTPException(status_code=400, detail=message)
+        return {"success": True, "message": message}
