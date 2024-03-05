@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from io import StringIO
-import schemas
+from ..scripts import schemas
 import json
 import csv
 

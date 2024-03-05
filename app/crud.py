@@ -1,6 +1,5 @@
-import models
-import schemas
-from database import SessionLocal, engine, Base
+from ..scripts import models, schemas
+from ..scripts.database import SessionLocal, engine, Base
 
 
 class SQLRepository:

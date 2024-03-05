@@ -9,8 +9,6 @@ from business import (
     Deleter
 )
 
-# Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
 uploader = Uploader()
 getter = Getter()
