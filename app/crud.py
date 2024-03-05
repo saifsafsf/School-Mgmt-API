@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from fastapi import Depends
 
 import models
 import schemas
@@ -12,8 +12,10 @@ class SQLRepository():
         if create:
             Base.metadata.create_all(bind=engine)
 
+        self.db = Depends(self.__get_db)
 
-    def get_db(self):
+
+    def __get_db(self):
         """
         Provides a SQLAlchemy database session 
         to the caller within a context manager.
@@ -29,120 +31,115 @@ class SQLRepository():
     
     def create_student(
             self,
-            db: Session, 
             student: schemas.StudentCreate
         ):
 
         db_student = models.Student(**student.dict())
-        db.add(db_student)
+        self.db.add(db_student)
         
-        db.commit()
-        db.refresh(db_student)
+        self.db.commit()
+        self.db.refresh(db_student)
         
         return db_student
 
 
     def create_department(
             self,
-            db: Session,
             department: schemas.DepartmentCreate,
         ):
 
         db_dept = models.Department(**department.dict())
-        db.add(db_dept)
+        self.db.add(db_dept)
 
-        db.commit()
-        db.refresh(db_dept)
+        self.db.commit()
+        self.db.refresh(db_dept)
 
         return db_dept
 
 
     def create_subject(
             self,
-            db: Session, 
             subject: schemas.SubjectCreate
         ):
 
         db_subject = models.Subject(
             **subject.dict()
         )
-        db.add(db_subject)
+        self.db.add(db_subject)
 
-        db.commit()
-        db.refresh(db_subject)
+        self.db.commit()
+        self.db.refresh(db_subject)
 
         return db_subject
 
 
     def create_teacher(
             self,
-            db: Session, 
             teacher: schemas.TeacherCreate
         ):
 
         db_teacher = models.Teacher(**teacher.dict())
-        db.add(db_teacher)
+        self.db.add(db_teacher)
 
-        db.commit()
-        db.refresh(db_teacher)
+        self.db.commit()
+        self.db.refresh(db_teacher)
 
         return db_teacher
 
 
     def create_enrollment(
             self,
-            db: Session, 
             enrollment: schemas.EnrollmentCreate
         ):
 
         db_enroll = models.Enrollment(**enrollment.dict())
-        db.add(db_enroll)
+        self.db.add(db_enroll)
 
-        db.commit()
-        db.refresh(db_enroll)
+        self.db.commit()
+        self.db.refresh(db_enroll)
 
         return db_enroll
 
 
-    def get_student(self, db: Session, email: str):
+    def get_student(self, email: str):
         return (
-            db
+            self.db
             .query(models.Student)
             .filter(models.Student.email == email)
             .first()
         )
 
 
-    def get_department(self, db: Session, dept_name: str):
+    def get_department(self, dept_name: str):
         return (
-            db
+            self.db
             .query(models.Department)
             .filter(models.Department.dept_name == dept_name)
             .first()
         )
 
 
-    def get_teacher(self, db: Session, email: str):
+    def get_teacher(self, email: str):
         return (
-            db
+            self.db
             .query(models.Teacher)
             .filter(models.Teacher.email == email)
             .first()
         )
 
 
-    def get_subject(self, db: Session, subj_name: str):
+    def get_subject(self, subj_name: str):
         return (
-            db
+            self.db
             .query(models.Subject)
             .filter(models.Subject.subj_name == subj_name)
             .first()
         )
 
 
-    def get_enrollment(self, db: Session, student_id: int, subject_id: int):
+    def get_enrollment(self, student_id: int, subject_id: int):
         return (
-            db
+            self.db
             .query(models.Enrollment)
             .filter(
                 (models.Enrollment.student_id == student_id) 
@@ -152,10 +149,10 @@ class SQLRepository():
         )
 
 
-    def get_subject_by_student(self, db: Session, student_id: int):
+    def get_subject_by_student(self, student_id: int):
 
         enrollments = (
-            db
+            self.db
             .query(models.Enrollment)
             .filter(models.Enrollment.student_id == student_id)
             .all()
@@ -164,7 +161,7 @@ class SQLRepository():
         subjects = []
         for enrollment in enrollments:
             subject = (
-                db
+                self.db
                 .query(models.Subject)
                 .filter(models.Subject.id == enrollment.subject_id)
                 .first()
@@ -176,7 +173,7 @@ class SQLRepository():
         return subjects
 
 
-    def update_records(self, db: Session, update_request: schemas.UpdateRequest):
+    def update_records(self, update_request: schemas.UpdateRequest):
         try:
             for update_item in update_request.updates:
                 table_name = update_item.table_name
@@ -185,7 +182,7 @@ class SQLRepository():
 
                 if table_name == "students":
                     (
-                        db
+                        self.db
                         .query(models.Student)
                         .filter(models.Student.id == record_id)
                         .update(updated_fields)
@@ -193,7 +190,7 @@ class SQLRepository():
 
                 elif table_name == "teachers":
                     (
-                        db
+                        self.db
                         .query(models.Teacher)
                         .filter(models.Teacher.id == record_id)
                         .update(updated_fields)
@@ -201,7 +198,7 @@ class SQLRepository():
 
                 elif table_name == "departments":
                     (
-                        db
+                        self.db
                         .query(models.Department)
                         .filter(models.Department.id == record_id)
                         .update(updated_fields)
@@ -209,7 +206,7 @@ class SQLRepository():
 
                 elif table_name == "subjects":
                     (
-                        db
+                        self.db
                         .query(models.Subject)
                         .filter(models.Subject.id == record_id)
                         .update(updated_fields)
@@ -217,7 +214,7 @@ class SQLRepository():
 
                 elif table_name == "students":
                     (
-                        db
+                        self.db
                         .query(models.Student)
                         .filter(models.Student.id == record_id)
                         .update(updated_fields)
@@ -226,18 +223,18 @@ class SQLRepository():
                 else:
                     return False, f"Table '{table_name}' does not exist!"
 
-            db.commit()
+            self.db.commit()
             return True, "Records updated successfully!"
         
         except Exception as e:
-            db.rollback()
+            self.db.rollback()
             return False, str(e)
         
 
-    def delete_enrollments(self, db: Session, student_id: int, subject_id: int):
+    def delete_enrollments(self, student_id: int, subject_id: int):
         try:
             enrollment = (
-                db
+                self.db
                 .query(models.Enrollment)
                 .filter(
                     (models.Enrollment.student_id == student_id) 
@@ -246,10 +243,10 @@ class SQLRepository():
                 .first()
             )
             
-            db.delete(enrollment)
-            db.commit()
+            self.db.delete(enrollment)
+            self.db.commit()
             return True, "Enrollment deleted successfully!"
         
         except Exception as e:
-            db.rollback()
+            self.db.rollback()
             return False, str(e)
