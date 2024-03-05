@@ -1,5 +1,3 @@
-from fastapi import Depends
-
 import models
 import schemas
 from database import SessionLocal, engine, Base
@@ -10,7 +8,7 @@ class SQLRepository:
     def __init__(self):
 
         Base.metadata.create_all(bind=engine)
-        self.db = Depends(self.__get_db)
+        self.db = next(self.__get_db())
 
 
     def __get_db(self):
@@ -32,27 +30,37 @@ class SQLRepository:
             student: schemas.StudentCreate
         ):
 
-        db_student = models.Student(**student.dict())
-        self.db.add(db_student)
+        try:
+            db_student = models.Student(**student.dict())
+            self.db.add(db_student)
+            
+            self.db.commit()
+            self.db.refresh(db_student)
+            
+            return True, "Student created successfully!"
         
-        self.db.commit()
-        self.db.refresh(db_student)
-        
-        return db_student
+        except Exception as e:
+            self.db.rollback()
+            return False, str(e)
 
 
     def create_department(
             self,
             department: schemas.DepartmentCreate,
         ):
+            
+        try:
+            db_dept = models.Department(**department.dict())
+            self.db.add(db_dept)
 
-        db_dept = models.Department(**department.dict())
-        self.db.add(db_dept)
+            self.db.commit()
+            self.db.refresh(db_dept)
 
-        self.db.commit()
-        self.db.refresh(db_dept)
-
-        return db_dept
+            return True, "Department created successfully!"
+        
+        except Exception as e:
+            self.db.rollback()
+            return False, str(e)
 
 
     def create_subject(
@@ -60,15 +68,20 @@ class SQLRepository:
             subject: schemas.SubjectCreate
         ):
 
-        db_subject = models.Subject(
-            **subject.dict()
-        )
-        self.db.add(db_subject)
+        try:
+            db_subject = models.Subject(
+                **subject.dict()
+            )
+            self.db.add(db_subject)
 
-        self.db.commit()
-        self.db.refresh(db_subject)
-
-        return db_subject
+            self.db.commit()
+            self.db.refresh(db_subject)
+            
+            return True, "Subject created successfully!"
+        
+        except Exception as e:
+            self.db.rollback()
+            return False, str(e)
 
 
     def create_teacher(
@@ -76,13 +89,18 @@ class SQLRepository:
             teacher: schemas.TeacherCreate
         ):
 
-        db_teacher = models.Teacher(**teacher.dict())
-        self.db.add(db_teacher)
+        try:
+            db_teacher = models.Teacher(**teacher.dict())
+            self.db.add(db_teacher)
 
-        self.db.commit()
-        self.db.refresh(db_teacher)
-
-        return db_teacher
+            self.db.commit()
+            self.db.refresh(db_teacher)
+            
+            return True, "Teacher created successfully!"
+        
+        except Exception as e:
+            self.db.rollback()
+            return False, str(e)
 
 
     def create_enrollment(
@@ -90,20 +108,34 @@ class SQLRepository:
             enrollment: schemas.EnrollmentCreate
         ):
 
-        db_enroll = models.Enrollment(**enrollment.dict())
-        self.db.add(db_enroll)
+        try:
+            db_enroll = models.Enrollment(**enrollment.dict())
+            self.db.add(db_enroll)
 
-        self.db.commit()
-        self.db.refresh(db_enroll)
+            self.db.commit()
+            self.db.refresh(db_enroll)
+            
+            return True, "Enrollment created successfully!"
+        
+        except Exception as e:
+            self.db.rollback()
+            return False, str(e)
 
-        return db_enroll
 
-
-    def get_student(self, email: str):
+    def get_student_by_email(self, email: str):
         return (
             self.db
             .query(models.Student)
             .filter(models.Student.email == email)
+            .first()
+        )
+    
+
+    def get_student_by_id(self, id: str):
+        return (
+            self.db
+            .query(models.Student)
+            .filter(models.Student.id == id)
             .first()
         )
 
@@ -244,6 +276,24 @@ class SQLRepository:
             self.db.delete(enrollment)
             self.db.commit()
             return True, "Enrollment deleted successfully!"
+        
+        except Exception as e:
+            self.db.rollback()
+            return False, str(e)
+        
+    
+    def delete_student(self, student_id: int):
+        try:
+            db_student = (
+                self.db
+                .query(models.Student)
+                .filter(models.Student.id == student_id)
+                .first()
+            )
+
+            self.db.delete(db_student)
+            self.db.commit()
+            return True, "Student deleted successfully!"
         
         except Exception as e:
             self.db.rollback()
