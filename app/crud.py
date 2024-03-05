@@ -1,12 +1,6 @@
 from sqlalchemy.orm import Session
 
-from models import (
-    Student,
-    Subject,
-    Teacher,
-    Department,
-    Enrollment
-)
+import models
 import schemas
 
 
@@ -15,7 +9,7 @@ def create_student(
         student: schemas.StudentCreate
     ):
 
-    db_student = Student(**student.dict())
+    db_student = models.Student(**student.dict())
     db.add(db_student)
     
     db.commit()
@@ -25,11 +19,11 @@ def create_student(
 
 
 def create_department(
-        db: Session, 
+        db: Session,
         department: schemas.DepartmentCreate,
     ):
 
-    db_dept = Department(**department.dict())
+    db_dept = models.Department(**department.dict())
     db.add(db_dept)
 
     db.commit()
@@ -43,7 +37,7 @@ def create_subject(
         subject: schemas.SubjectCreate
     ):
 
-    db_subject = Subject(
+    db_subject = models.Subject(
         **subject.dict()
     )
     db.add(db_subject)
@@ -59,7 +53,7 @@ def create_teacher(
         teacher: schemas.TeacherCreate
     ):
 
-    db_teacher = Teacher(**teacher.dict())
+    db_teacher = models.Teacher(**teacher.dict())
     db.add(db_teacher)
 
     db.commit()
@@ -73,7 +67,7 @@ def create_enrollment(
         enrollment: schemas.EnrollmentCreate
     ):
 
-    db_enroll = Enrollment(**enrollment.dict())
+    db_enroll = models.Enrollment(**enrollment.dict())
     db.add(db_enroll)
 
     db.commit()
@@ -85,40 +79,40 @@ def create_enrollment(
 def get_student(db: Session, email: str):
     return (
         db
-        .query(Student)
-        .filter(Student.email == email)
+        .query(models.Student)
+        .filter(models.Student.email == email)
         .first()
     )
 
 def get_department(db: Session, dept_name: str):
     return (
         db
-        .query(Department)
-        .filter(Department.dept_name == dept_name)
+        .query(models.Department)
+        .filter(models.Department.dept_name == dept_name)
         .first()
     )
 
 def get_teacher(db: Session, email: str):
     return (
         db
-        .query(Teacher)
-        .filter(Teacher.email == email)
+        .query(models.Teacher)
+        .filter(models.Teacher.email == email)
         .first()
     )
 
 def get_subject(db: Session, subj_name: str):
     return (
         db
-        .query(Subject)
-        .filter(Subject.subj_name == subj_name)
+        .query(models.Subject)
+        .filter(models.Subject.subj_name == subj_name)
         .first()
     )
 
 def get_enrollment(db: Session, student_id: int, subject_id: int):
     return (
         db
-        .query(Enrollment)
-        .filter((Enrollment.student_id == student_id) & (Enrollment.subject_id == subject_id))
+        .query(models.Enrollment)
+        .filter((models.Enrollment.student_id == student_id) & (models.Enrollment.subject_id == subject_id))
         .first()
     )
 
@@ -126,8 +120,8 @@ def get_subject_by_student(db: Session, student_id: int):
 
     enrollments = (
         db
-        .query(Enrollment)
-        .filter(Enrollment.student_id == student_id)
+        .query(models.Enrollment)
+        .filter(models.Enrollment.student_id == student_id)
         .all()
     )
 
@@ -135,8 +129,8 @@ def get_subject_by_student(db: Session, student_id: int):
     for enrollment in enrollments:
         subject = (
             db
-            .query(Subject)
-            .filter(Subject.id == enrollment.subject_id)
+            .query(models.Subject)
+            .filter(models.Subject.id == enrollment.subject_id)
             .first()
         )
 
@@ -155,40 +149,40 @@ def update_records(db: Session, update_request: schemas.UpdateRequest):
             if table_name == "students":
                 (
                     db
-                    .query(Student)
-                    .filter(Student.id == record_id)
+                    .query(models.Student)
+                    .filter(models.Student.id == record_id)
                     .update(updated_fields)
                 )
 
             elif table_name == "teachers":
                 (
                     db
-                    .query(Teacher)
-                    .filter(Teacher.id == record_id)
+                    .query(models.Teacher)
+                    .filter(models.Teacher.id == record_id)
                     .update(updated_fields)
                 )
 
             elif table_name == "departments":
                 (
                     db
-                    .query(Department)
-                    .filter(Department.id == record_id)
+                    .query(models.Department)
+                    .filter(models.Department.id == record_id)
                     .update(updated_fields)
                 )
 
             elif table_name == "subjects":
                 (
                     db
-                    .query(Subject)
-                    .filter(Subject.id == record_id)
+                    .query(models.Subject)
+                    .filter(models.Subject.id == record_id)
                     .update(updated_fields)
                 )
 
             elif table_name == "students":
                 (
                     db
-                    .query(Student)
-                    .filter(Student.id == record_id)
+                    .query(models.Student)
+                    .filter(models.Student.id == record_id)
                     .update(updated_fields)
                 )
             
@@ -207,8 +201,8 @@ def delete_enrollments(db: Session, student_id: int, subject_id: int):
     try:
         enrollment = (
             db
-            .query(Enrollment)
-            .filter((Enrollment.student_id == student_id) & (Enrollment.subject_id == subject_id))
+            .query(models.Enrollment)
+            .filter((models.Enrollment.student_id == student_id) & (models.Enrollment.subject_id == subject_id))
             .first()
         )
         
