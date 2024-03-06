@@ -9,7 +9,7 @@ from scripts.database import SessionLocal, engine, Base
 class SQLRepository:
 
     def __init__(self):
-
+        print("whaaaaaaaaaa")
         Base.metadata.create_all(bind=engine)
         self.db = next(self.__get_db())
 

@@ -2,14 +2,19 @@ from fastapi import HTTPException
 from io import StringIO
 import json
 import csv
+import sys
+
+sys.path.insert(0, "C:\\NUST\\Jobs\\Sila")
 
 from scripts import schemas
 from crud import SQLRepository
 
+REPO = SQLRepository()
+
 
 class Uploader:
 
-    def __init__(self, repo=SQLRepository()):
+    def __init__(self, repo=REPO):
         self.repo = repo
 
     
@@ -68,8 +73,8 @@ class Uploader:
                     )
                 
                 elif 'std_name' == col:
-                    db_stud = self.repo.get_student(
-                        email=row.get('std_email')
+                    db_stud = self.repo.get_student_by_id(
+                        id=row.get('std_id')
                     )
 
                     if db_stud:
@@ -84,7 +89,8 @@ class Uploader:
                     )
 
                 else:
-                    pass
+                    success = True
+                    continue
 
                 if not success:
                     raise HTTPException(status_code=400, detail=message)
@@ -197,7 +203,7 @@ class Uploader:
 
 class Getter:
 
-    def __init__(self, repo=SQLRepository()):
+    def __init__(self, repo=REPO):
         self.repo = repo
 
     
@@ -217,7 +223,7 @@ class Getter:
 
 class Setter:
 
-    def __init__(self, repo=SQLRepository()):
+    def __init__(self, repo=REPO):
         self.repo = repo
 
     
@@ -241,7 +247,7 @@ class Setter:
 
 class Deleter:
 
-    def __init__(self, repo=SQLRepository()):
+    def __init__(self, repo=REPO):
         self.repo = repo
 
     
