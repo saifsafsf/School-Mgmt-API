@@ -87,7 +87,7 @@ class Uploader:
                     pass
 
                 if not success:
-                    raise HTTPException(status_code=400, details=message)
+                    raise HTTPException(status_code=400, detail=message)
                 
             if ('subj_name' in row) and ('std_name' in row):
                 db_enroll = self.repo.get_enrollment(
@@ -106,7 +106,7 @@ class Uploader:
                 )
 
                 if not success:
-                    raise HTTPException(status_code=400, details=message)
+                    raise HTTPException(status_code=400, detail=message)
 
         return {
             "success": success, 
@@ -128,7 +128,7 @@ class Uploader:
 
                 # raise an exception, halt the process
                 if db_dept:
-                    raise HTTPException(status_code=400, details="Department already exists.")
+                    raise HTTPException(status_code=400, detail="Department already exists.")
                 
                 success, message = self.repo.create_department(
                     department=schemas.DepartmentCreate(**row)
@@ -140,7 +140,7 @@ class Uploader:
                 )
 
                 if db_stud:
-                    raise HTTPException(status_code=400, details="Student already exists!")
+                    raise HTTPException(status_code=400, detail="Student already exists!")
 
                 success, message = self.repo.create_student(
                     student=schemas.StudentCreate(**row)
@@ -152,7 +152,7 @@ class Uploader:
                 )
 
                 if db_subj:
-                    raise HTTPException(status_code=400, details="Subject already exists!")
+                    raise HTTPException(status_code=400, detail="Subject already exists!")
 
                 success, message = self.repo.create_subject(
                     subject=schemas.SubjectCreate(**row)
@@ -164,7 +164,7 @@ class Uploader:
                 )
 
                 if db_teacher:
-                    raise HTTPException(status_code=400, details="Teacher already exists!")
+                    raise HTTPException(status_code=400, detail="Teacher already exists!")
                 
                 success, message = self.repo.create_teacher(
                     teacher=schemas.TeacherCreate(**row)
@@ -177,7 +177,7 @@ class Uploader:
                 )
 
                 if db_enroll:
-                    raise HTTPException(status_code=400, details="Enrollment already exists!")
+                    raise HTTPException(status_code=400, detail="Enrollment already exists!")
                 
                 success, message = self.repo.create_enrollment(
                     enrollment=schemas.EnrollmentCreate(**row)
@@ -187,7 +187,7 @@ class Uploader:
                 pass
 
             if not success:
-                raise HTTPException(status_code=400, details=message)
+                raise HTTPException(status_code=400, detail=message)
 
         return {
             "success": success, 
@@ -206,7 +206,7 @@ class Getter:
         db_student = self.repo.get_student_by_id(id=student_id)
 
         if not db_student:
-            raise HTTPException(status_code=400, details="Student does not exist!")
+            raise HTTPException(status_code=400, detail="Student does not exist!")
 
         subjects = self.repo.get_subject_by_student(
             student_id=student_id
