@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: genschsa/mysql-employees
+    container_name: mysql-employees
+    ports:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: college
+    networks:
+      - sila-test
+  myapp:
+    build: .
+    ports:
+      - 5000:5000
+    depends_on:
+      - mysql
+    restart: always
+    environment:
+      DB_USER: root
+      DB_PASS: college
+      DB_HOST: mysql:3306
+      DB_NAME: employees
+    command: ["sh", "-c", "sleep 10 && python /home/app/main.py"]
+    networks:
+      - sila-test
+    volumes: 
+      - /home/syedbaqarabbas/Downloads/Sila:/home
+
+networks:
+  sila-test:
+    driver: bridge
