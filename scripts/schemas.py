@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import List, Dict, Any
 
 
@@ -20,6 +20,15 @@ class StudentBase(BaseModel):
     std_name: str
     dept_id: int
 
+    @validator('email')
+    def email_must_be_valid_email(cls, value):
+        
+        if '@' not in value:
+            raise ValueError('Invalid email format')
+        
+        return value
+
+
 class StudentCreate(StudentBase):
     pass
 
@@ -34,6 +43,15 @@ class TeacherBase(BaseModel):
     email: str
     teacher_name: str
     dept_id: int
+
+    @validator('email')
+    def email_must_be_valid_email(cls, value):
+        
+        if '@' not in value:
+            raise ValueError('Invalid email format')
+        
+        return value
+
 
 class TeacherCreate(TeacherBase):
     pass
@@ -50,6 +68,7 @@ class SubjectBase(BaseModel):
     description: str
     dept_id: int
     teacher_id: int
+    
 
 class SubjectCreate(SubjectBase):
     pass

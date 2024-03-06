@@ -23,18 +23,23 @@ async def upload_data(
         file: UploadFile = File(...)
     ):
     """
-    Endpoint to upload CSV data and insert it into the database.
+    Endpoint to upload data and insert it into the database.
 
     Parameters
     ----------
     file : UploadFile
-        the CSV file to be uploaded
+        the file to be uploaded
 
     Returns
     -------
     message : dict
         success : A success or failure boolean
         message : Success or error message
+
+    Raises
+    ------
+    ValueError
+        if a third value for `format` query parameter is passed
     """
 
     # waiting for the uploading file

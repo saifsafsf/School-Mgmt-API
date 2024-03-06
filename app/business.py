@@ -66,9 +66,12 @@ class Uploader:
                     if db_dept:
                         continue
                     
-                    success, message = self.repo.create_department(
-                        department=schemas.DepartmentCreate(dept_name=row.get('dept_name'))
-                    )
+                    try:
+                        success, message = self.repo.create_department(
+                            department=schemas.DepartmentCreate(dept_name=row.get('dept_name'))
+                        )
+                    except Exception as e:
+                        success, message = False, str(e)
 
                 elif 'teacher_name' == col:
                     db_teacher = self.repo.get_teacher(
@@ -78,13 +81,16 @@ class Uploader:
                     if db_teacher:
                         continue
                     
-                    success, message = self.repo.create_teacher(
-                        teacher=schemas.TeacherCreate(
-                            email=row.get('teacher_email'),
-                            teacher_name=row.get('teacher_name'),
-                            dept_id=row.get('dept_id')
+                    try:
+                        success, message = self.repo.create_teacher(
+                            teacher=schemas.TeacherCreate(
+                                email=row.get('teacher_email'),
+                                teacher_name=row.get('teacher_name'),
+                                dept_id=row.get('dept_id')
+                            )
                         )
-                    )
+                    except Exception as e:
+                        success, message = False, str(e)
 
                 elif 'subj_name' == col:
                     db_subj = self.repo.get_subject(
@@ -94,14 +100,17 @@ class Uploader:
                     if db_subj:
                         continue
 
-                    success, message = self.repo.create_subject(
-                        subject=schemas.SubjectCreate(
-                            subj_name=row.get('subj_name'),
-                            description=row.get('description'),
-                            dept_id=row.get('dept_id'),
-                            teacher_id=row.get('teacher_id')
+                    try:
+                        success, message = self.repo.create_subject(
+                            subject=schemas.SubjectCreate(
+                                subj_name=row.get('subj_name'),
+                                description=row.get('description'),
+                                dept_id=row.get('dept_id'),
+                                teacher_id=row.get('teacher_id')
+                            )
                         )
-                    )
+                    except Exception as e:
+                        success, message = False, str(e)
                 
                 elif 'std_name' == col:
                     db_stud = self.repo.get_student_by_id(
@@ -111,13 +120,16 @@ class Uploader:
                     if db_stud:
                         continue
 
-                    success, message = self.repo.create_student(
-                        student=schemas.StudentCreate(
-                            email=row.get('std_email'),
-                            std_name=row.get('std_name'),
-                            dept_id=row.get('dept_id')
+                    try:
+                        success, message = self.repo.create_student(
+                            student=schemas.StudentCreate(
+                                email=row.get('std_email'),
+                                std_name=row.get('std_name'),
+                                dept_id=row.get('dept_id')
+                            )
                         )
-                    )
+                    except Exception as e:
+                        success, message = False, str(e)
 
                 else:
                     success = True
@@ -135,12 +147,15 @@ class Uploader:
                 if db_enroll:
                     continue
                 
-                success, message = self.repo.create_enrollment(
-                    enrollment=schemas.EnrollmentCreate(
-                        student_id=row.get('std_id'),
-                        subject_id=row.get('subj_id')
+                try:
+                    success, message = self.repo.create_enrollment(
+                        enrollment=schemas.EnrollmentCreate(
+                            student_id=row.get('std_id'),
+                            subject_id=row.get('subj_id')
+                        )
                     )
-                )
+                except Exception as e:
+                    success, message = False, str(e)
 
                 if not success:
                     raise HTTPException(status_code=400, detail=message)
@@ -176,7 +191,6 @@ class Uploader:
         data = json.loads(content_str)
 
         for row in data:
-
             if 'dept_name' in row:
                 # if the dept already exists
                 db_dept = self.repo.get_department(
@@ -187,9 +201,12 @@ class Uploader:
                 if db_dept:
                     raise HTTPException(status_code=400, detail="Department already exists.")
                 
-                success, message = self.repo.create_department(
-                    department=schemas.DepartmentCreate(**row)
-                )
+                try:
+                    success, message = self.repo.create_department(
+                        department=schemas.DepartmentCreate(**row)
+                    )
+                except Exception as e:
+                    success, message = False, str(e)
 
             elif 'std_name' in row:
                 db_stud = self.repo.get_student_by_email(
@@ -199,9 +216,12 @@ class Uploader:
                 if db_stud:
                     raise HTTPException(status_code=400, detail="Student already exists!")
 
-                success, message = self.repo.create_student(
-                    student=schemas.StudentCreate(**row)
-                )
+                try:
+                    success, message = self.repo.create_student(
+                        student=schemas.StudentCreate(**row)
+                    )
+                except Exception as e:
+                    success, message = False, str(e)
             
             elif 'subj_name' in row:
                 db_subj = self.repo.get_subject(
@@ -211,9 +231,12 @@ class Uploader:
                 if db_subj:
                     raise HTTPException(status_code=400, detail="Subject already exists!")
 
-                success, message = self.repo.create_subject(
-                    subject=schemas.SubjectCreate(**row)
-                )
+                try:
+                    success, message = self.repo.create_subject(
+                        subject=schemas.SubjectCreate(**row)
+                    )
+                except Exception as e:
+                    success, message = False, str(e)
             
             elif 'teacher_name' in row:
                 db_teacher = self.repo.get_teacher(
@@ -223,9 +246,12 @@ class Uploader:
                 if db_teacher:
                     raise HTTPException(status_code=400, detail="Teacher already exists!")
                 
-                success, message = self.repo.create_teacher(
-                    teacher=schemas.TeacherCreate(**row)
-                )
+                try:
+                    success, message = self.repo.create_teacher(
+                        teacher=schemas.TeacherCreate(**row)
+                    )
+                except Exception as e:
+                    success, message = False, str(e)
             
             elif ('subject_id' in row) and ('student_id'  in row):
                 db_enroll = self.repo.get_enrollment(
@@ -236,9 +262,12 @@ class Uploader:
                 if db_enroll:
                     raise HTTPException(status_code=400, detail="Enrollment already exists!")
                 
-                success, message = self.repo.create_enrollment(
-                    enrollment=schemas.EnrollmentCreate(**row)
-                )
+                try:
+                    success, message = self.repo.create_enrollment(
+                        enrollment=schemas.EnrollmentCreate(**row)
+                    )
+                except Exception as e:
+                    success, message = False, str(e)
 
             else:
                 pass
