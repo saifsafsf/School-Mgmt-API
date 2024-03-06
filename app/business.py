@@ -9,16 +9,47 @@ sys.path.insert(0, "C:\\NUST\\Jobs\\Sila")
 from scripts import schemas
 from crud import SQLRepository
 
+# to have one repo throughout the whole system
 REPO = SQLRepository()
 
 
 class Uploader:
+    """
+    class to upload CSV or JSON payloads into the db
+    """
 
     def __init__(self, repo=REPO):
+        """
+        Assigns the global SQL repo to the instance
+
+        Parameters
+        ----------
+        repo : Optional[SQLRepository]
+            The SQL Repository with all the functions related to the db
+        """
         self.repo = repo
 
     
     def upload_csv(self, file_content: bytes):
+        """
+        Takes the file content of the CSV payload
+        and inserts into the db
+
+        Parameters
+        ----------
+        file_content : bytes
+            binary content of the file
+
+        Returns
+        -------
+        success/failure, message : tuple
+
+        Raises
+        ------
+        HTTPException
+            If the insertion is not successful
+        """
+
         content_str = file_content.decode('utf-8')
         data = csv.DictReader(StringIO(content_str))
 
@@ -121,6 +152,26 @@ class Uploader:
     
 
     def upload_json(self, file_content: bytes):
+        """
+        Takes the file content of the JSON payload
+        and inserts into the db
+
+        Parameters
+        ----------
+        file_content : bytes
+            binary content of the file
+
+        Returns
+        -------
+        success/failure, message : tuple
+
+        Raises
+        ------
+        HTTPException
+            If the insertion is not successful
+            OR If a record already exists in the db
+        """
+
         content_str = file_content.decode('utf-8')
         data = json.loads(content_str)
 
@@ -202,12 +253,37 @@ class Uploader:
     
 
 class Getter:
+    """
+    a class to get any record from the db
+    """
 
     def __init__(self, repo=REPO):
+        """
+        Assigns the global SQL repo to the instance
+
+        Parameters
+        ----------
+        repo : Optional[SQLRepository]
+            The SQL Repository with all the functions related to the db
+        """
+
         self.repo = repo
 
     
     def get_subjects_by_student(self, student_id):
+        """
+        Fetches the subject list for the given student
+
+        Parameters
+        ----------
+        student_id : int
+            the id of the student
+
+        Returns
+        -------
+        list[models.Subject]
+            the subject records with matching student in Enrollments table
+        """
 
         db_student = self.repo.get_student_by_id(id=student_id)
 
@@ -222,12 +298,43 @@ class Getter:
     
 
 class Setter:
+    """
+    a class to update one or more records in the db
+    """
 
     def __init__(self, repo=REPO):
+        """
+        Assigns the global SQL repo to the instance
+
+        Parameters
+        ----------
+        repo : Optional[SQLRepository]
+            The SQL Repository with all the functions related to the db
+        """
+
         self.repo = repo
 
     
     def update_record(self, file_content: bytes):
+        """
+        Takes the file content of JSON payload 
+        and updates the records with matching details
+
+        Parameters
+        ----------
+        file_content : bytes
+            binary content of the file
+
+        Returns
+        -------
+        success/failure, message : tuple
+
+        Raises
+        ------
+        HTTPException
+            If the updating is not successful
+        """
+
         content_str = file_content.decode('utf-8')
         data = json.loads(content_str)
 
@@ -246,12 +353,43 @@ class Setter:
     
 
 class Deleter:
+    """
+    class to delete a record from the db
+    """
 
     def __init__(self, repo=REPO):
+        """
+        Assigns the global SQL repo to the instance
+
+        Parameters
+        ----------
+        repo : Optional[SQLRepository]
+            The SQL Repository with all the functions related to the db
+        """
+
         self.repo = repo
 
     
     def delete_enrollment(self, student_id: int, subject_id: int):
+        """
+        Takes the file content of JSON payload 
+        and updates the records with matching details
+
+        Parameters
+        ----------
+        file_content : bytes
+            binary content of the file
+
+        Returns
+        -------
+        success/failure, message : tuple
+
+        Raises
+        ------
+        HTTPException
+            If the updating is not successful
+        """
+        
         db_enroll = self.repo.get_enrollment(
             student_id=student_id,
             subject_id=subject_id

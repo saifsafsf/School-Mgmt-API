@@ -5,7 +5,7 @@ from business import (
     Deleter
 )
 
-
+# Making sure the objects do not get initiated again
 UPLOADER = Uploader()
 GETTER = Getter()
 SETTER = Setter()

@@ -7,9 +7,19 @@ from scripts.database import SessionLocal, engine, Base
 
 
 class SQLRepository:
+    """
+    A class to represent the data access layer. 
+    """
 
     def __init__(self):
-        print("whaaaaaaaaaa")
+        """
+        creates all the tables defined using declarative_base()
+        
+        Attributes
+        ----------
+        db : Session
+            an instance of a database with all the tables defined in models.py
+        """
         Base.metadata.create_all(bind=engine)
         self.db = next(self.__get_db())
 
@@ -32,6 +42,17 @@ class SQLRepository:
             self,
             student: schemas.StudentCreate
         ):
+        """
+        creates the student record in the db
+
+        Parameters
+        ----------
+        student : schemas.StudentCreate
+
+        Returns
+        -------
+        success/failure, message : tuple
+        """
 
         try:
             db_student = models.Student(**student.dict())
@@ -51,6 +72,17 @@ class SQLRepository:
             self,
             department: schemas.DepartmentCreate,
         ):
+        """
+        creates the department record in the db
+
+        Parameters
+        ----------
+        department : schemas.DepartmentCreate
+
+        Returns
+        -------
+        success/failure, message : tuple
+        """
             
         try:
             db_dept = models.Department(**department.dict())
@@ -70,6 +102,17 @@ class SQLRepository:
             self,
             subject: schemas.SubjectCreate
         ):
+        """
+        creates the subject record in the db
+
+        Parameters
+        ----------
+        subject : schemas.SubjectCreate
+
+        Returns
+        -------
+        success/failure, message : tuple
+        """
 
         try:
             db_subject = models.Subject(
@@ -91,6 +134,17 @@ class SQLRepository:
             self,
             teacher: schemas.TeacherCreate
         ):
+        """
+        creates the teacher record in the db
+
+        Parameters
+        ----------
+        teacher : schemas.TeacherCreate
+
+        Returns
+        -------
+        success/failure, message : tuple
+        """
 
         try:
             db_teacher = models.Teacher(**teacher.dict())
@@ -110,6 +164,17 @@ class SQLRepository:
             self,
             enrollment: schemas.EnrollmentCreate
         ):
+        """
+        creates the enrollment record in the db
+
+        Parameters
+        ----------
+        enrollment : schemas.EnrollmentCreate
+
+        Returns
+        -------
+        success/failure, message : tuple
+        """
 
         try:
             db_enroll = models.Enrollment(**enrollment.dict())
@@ -126,6 +191,20 @@ class SQLRepository:
 
 
     def get_student_by_email(self, email: str):
+        """
+        Fetches the student with the given email in the db
+
+        Parameters
+        ----------
+        email : str
+            the email of the student
+
+        Returns
+        -------
+        models.Student
+            the student record with matching email
+        """
+
         return (
             self.db
             .query(models.Student)
@@ -135,6 +214,20 @@ class SQLRepository:
     
 
     def get_student_by_id(self, id: str):
+        """
+        Fetches the student with the given id in the db
+
+        Parameters
+        ----------
+        id : int
+            the id of the student
+
+        Returns
+        -------
+        models.Student
+            the student record with matching id
+        """
+
         return (
             self.db
             .query(models.Student)
@@ -144,6 +237,20 @@ class SQLRepository:
 
 
     def get_department(self, dept_name: str):
+        """
+        Fetches the department with the given name in the db
+
+        Parameters
+        ----------
+        dept_name : str
+            the name of the department
+
+        Returns
+        -------
+        models.Department
+            the department record with matching name
+        """
+
         return (
             self.db
             .query(models.Department)
@@ -153,6 +260,20 @@ class SQLRepository:
 
 
     def get_teacher(self, email: str):
+        """
+        Fetches the teacher with the given email in the db
+
+        Parameters
+        ----------
+        email : str
+            the email of the teacher
+
+        Returns
+        -------
+        models.Teacher
+            the teacher record with matching email
+        """
+
         return (
             self.db
             .query(models.Teacher)
@@ -162,6 +283,20 @@ class SQLRepository:
 
 
     def get_subject(self, subj_name: str):
+        """
+        Fetches the subject with the given name in the db
+
+        Parameters
+        ----------
+        subj_name : str
+            the name of the subject
+
+        Returns
+        -------
+        models.Subject
+            the subject record with matching name
+        """
+
         return (
             self.db
             .query(models.Subject)
@@ -171,6 +306,22 @@ class SQLRepository:
 
 
     def get_enrollment(self, student_id: int, subject_id: int):
+        """
+        Fetches the enrollment with the given credentials
+
+        Parameters
+        ----------
+        student_id : int
+            the id of the student
+        subject_id : int
+            the id of the subject
+
+        Returns
+        -------
+        models.Enrollment
+            the enrollment with matching credentials
+        """
+
         return (
             self.db
             .query(models.Enrollment)
@@ -183,6 +334,19 @@ class SQLRepository:
 
 
     def get_subject_by_student(self, student_id: int):
+        """
+        Fetches the subject list for the given student
+
+        Parameters
+        ----------
+        id : int
+            the id of the student
+
+        Returns
+        -------
+        list[models.Subject]
+            the subject records with matching student in Enrollments table
+        """
 
         enrollments = (
             self.db
@@ -192,6 +356,8 @@ class SQLRepository:
         )
 
         subjects = []
+        
+        # for each subject the student is enrolled in
         for enrollment in enrollments:
             subject = (
                 self.db
@@ -207,6 +373,19 @@ class SQLRepository:
 
 
     def update_records(self, update_request: schemas.UpdateRequest):
+        """
+        updates the the record with matching details
+
+        Parameters
+        ----------
+        update_request : schemas.UpdateRequest
+            List of schemas.UpdateItem to be updated
+
+        Returns
+        -------
+        success/failure, message : tuple
+        """
+        
         try:
             for update_item in update_request.updates:
                 table_name = update_item.table_name
@@ -265,6 +444,21 @@ class SQLRepository:
         
 
     def delete_enrollments(self, student_id: int, subject_id: int):
+        """
+        Deletes the enrollment with matching credentials
+
+        Parameters
+        ----------
+        student_id : int
+            the id of the student
+        subject_id : int
+            the id of the subject
+
+        Returns
+        -------
+        success/failure, message : tuple
+        """
+
         try:
             enrollment = (
                 self.db
@@ -286,6 +480,19 @@ class SQLRepository:
         
     
     def delete_student(self, student_id: int):
+        """
+        Deletes the student with matching id
+
+        Parameters
+        ----------
+        student_id : int
+            the id of the student
+
+        Returns
+        -------
+        success/failure, message : tuple
+        """
+
         try:
             db_student = (
                 self.db

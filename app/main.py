@@ -3,6 +3,7 @@ from fastapi import FastAPI, UploadFile, File
 from typing import Literal
 import sys
 
+# for relative imports
 sys.path.insert(0, "C:\\NUST\\Jobs\\Sila")
 
 from app import (
@@ -12,7 +13,7 @@ from app import (
     DELETER
 )
 
-
+# initializing app instance
 app = FastAPI()
 
 
@@ -28,6 +29,12 @@ async def upload_data(
     ----------
     file : UploadFile
         the CSV file to be uploaded
+
+    Returns
+    -------
+    message : dict
+        success : A success or failure boolean
+        message : Success or error message
     """
 
     # waiting for the uploading file
@@ -52,6 +59,8 @@ def get_subjects_by_student(student_id: int):
     ----------
     student_id : int
         the student's id in the db
+
+    subjects : list[models.Subject]
     """
 
     subjects = GETTER.get_subjects_by_student(student_id)
@@ -70,6 +79,12 @@ async def update_record(
     ----------
     file : UploadFile
         the JSON file to be uploaded
+
+    Returns
+    -------
+    message : dict
+        success : A success or failure boolean
+        message : Success or error message
     """
 
     content = await file.read()
@@ -89,6 +104,12 @@ def delete_enrollment(student_id: int, subject_id: int):
         the student's id in the db
     subject_id : int
         the subject's id in the db
+
+    Returns
+    -------
+    message : dict
+        success : A success or failure boolean
+        message : Success or error message
     """
 
     message = DELETER.delete_enrollment(
