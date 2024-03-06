@@ -4,7 +4,7 @@ from typing import Literal
 import sys
 
 # for relative imports
-sys.path.insert(0, "/home/")
+sys.path.insert(0, "C:\\NUST\\Jobs\\Sila")
 
 from app import (
     GETTER,

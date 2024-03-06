@@ -4,7 +4,7 @@ import json
 import csv
 import sys
 
-sys.path.insert(0, "/home/")
+sys.path.insert(0, "C:\\NUST\\Jobs\\Sila")
 
 from scripts import schemas
 from crud import SQLRepository

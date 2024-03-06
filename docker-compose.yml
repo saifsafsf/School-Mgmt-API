@@ -2,14 +2,15 @@ version: '3.8'
 
 services:
   mysql:
-    image: genschsa/mysql-employees
-    container_name: mysql-employees
+    image: mysql:8.0.35
+    container_name: mysql-dummy
     ports:
       - "3306"
     environment:
       MYSQL_ROOT_PASSWORD: college
     networks:
       - sila-test
+    command: ["mysql", "-h", "localhost", "-u", "root", "-pcollege", "-e", "CREATE DATABASE IF NOT EXISTS school;"]
   myapp:
     build: .
     ports:
@@ -21,7 +22,7 @@ services:
       DB_USER: root
       DB_PASS: college
       DB_HOST: mysql:3306
-      DB_NAME: employees
+      DB_NAME: school
     command: ["sh", "-c", "sleep 10 && python /home/app/main.py"]
     networks:
       - sila-test

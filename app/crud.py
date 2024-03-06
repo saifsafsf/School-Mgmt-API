@@ -1,6 +1,6 @@
 import sys
 
-sys.path.insert(0, "/home/")
+sys.path.insert(0, "C:\\NUST\\Jobs\\Sila")
 
 from scripts import models, schemas
 from scripts.database import SessionLocal, engine, Base
