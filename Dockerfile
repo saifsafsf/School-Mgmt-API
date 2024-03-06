@@ -1,11 +1,13 @@
-FROM python:3.9-slim
+FROM python:3.11.3
 
-WORKDIR /app
+WORKDIR /home
 
-COPY requirements.txt /app/
+COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY . /app/
+ENV PYTHONPATH "${PYTHONPATH}:/"
+
+COPY . .
 
 CMD ["python", "app/main.py"]
