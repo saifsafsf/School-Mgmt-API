@@ -8,6 +8,6 @@ RUN pip install -r requirements.txt
 
 ENV PYTHONPATH "${PYTHONPATH}:/"
 
-COPY . .
+COPY ./ /home/
 
-CMD ["python", "app/main.py"]
+# CMD ["python", "app/main.py"]

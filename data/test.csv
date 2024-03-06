@@ -1,4 +1,4 @@
 dept_id,dept_name,teacher_id,teacher_name,teacher_email,subj_id,subj_name,description,std_id,std_name,std_email
 1,Engineering,1,Rafia Mumtaz,rafia.mumtaz@email.com,1,Software Engineering,Software Engineering includes extensive studies on the best practices to make a software.,1,Saif Ullah,saif.ullah@email.com
 2,Medical,2,Seemab Latif,seemab.latif@email.com,2,MBBS,MBBS includes comprehensive studies on medical conditions in living things.,2,Asad Ullah,asad.ullah@email.com
-1,Engineering,3,Arslan Khan,arslan.khan@email.com,3,Artificial Intelligence,AI constitutes studying about the machines learning like human brains.,3,Hafsa Malik,hafsa.malikemail.com
+1,Engineering,3,Arslan Khan,arslan.khan@email.com,3,Artificial Intelligence,AI constitutes studying about the machines learning like human brains.,3,Hafsa Malik,hafsa.malik@email.com

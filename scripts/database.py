@@ -8,7 +8,7 @@ from config import settings
 
 # MySQL connector link
 SQLALCHEMY_DATABASE_URL = f"mysql+mysqlconnector://{settings.db_user}:{settings.db_pass}@{settings.db_host}/{settings.db_name}"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"ssl_disabled": True})
 
 SessionLocal = sessionmaker(
     autocommit=False, 
