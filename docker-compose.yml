@@ -3,18 +3,14 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0.35
-    environment:
-      MYSQL_ROOT_PASSWORD: fsdbsdmsd
-      MYSQL_DATABASE: school
-      # MYSQL_PASSWORD: saifpass
-      # MYSQL_USER: saif
-    command: --skip-grant-tables
+    container_name: mysql-dummy
     ports:
-      - 3307:3306
-    restart: always
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: college
     networks:
       - sila-test
-      
+    command: ["mysql", "-h", "localhost", "-u", "root", "-pcollege", "-e", "CREATE DATABASE IF NOT EXISTS school;"]
   myapp:
     build: .
     ports:
@@ -24,14 +20,14 @@ services:
     restart: always
     environment:
       DB_USER: root
-      DB_PASS: fsdbsdmsd
-      DB_HOST: localhost:3306
+      DB_PASS: college
+      DB_HOST: mysql:3306
       DB_NAME: school
+    command: ["sh", "-c", "sleep 10 && python /home/app/main.py"]
     networks:
       - sila-test
-
-volumes:
-  mysql_data:
+    volumes: 
+      - /home/syedbaqarabbas/Downloads/Sila:/home
 
 networks:
   sila-test:
