@@ -1,8 +1,8 @@
-# Database Schema
+# School Management API
 
 ## Overview
 
-This database schema represents a simplified model for managing students, teachers, departments, subjects, and enrollments. It allows for tracking students' enrollment in subjects, teachers associated with subjects, and departments to which students and teachers belong.
+This FastAPI represents a web-based application with 3-tier database architecture and a simplified model for managing students, teachers, departments, subjects, and enrollments. It allows for tracking students' enrollment in subjects, teachers associated with subjects, and departments to which students and teachers belong.
 
 ## How to run
 
